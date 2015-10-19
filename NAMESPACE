@@ -1,1 +1,6 @@
 exportPattern(".")
+importFrom("graphics", "lines", "par", "plot")
+importFrom("stats", "nls", "nls.control", "predict", "qf", "qt",
+             "spline", "uniroot")
+importFrom("utils", "combn")
+import(nls2)

@@ -43,7 +43,7 @@ At least three repetitions are required to calculate the NOEC and LOEC
 \code{\link{curveFit}}
 }
 \examples{
-data(cytotox)
+# data(cytotox)
 
 ## example 1
 # calcualte the NOEC and LOEC of heavy metal Ni(2+) on the MCF-7 cells at the default significance 

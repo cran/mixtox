@@ -2,6 +2,8 @@ eiaPred <- function(effv, sgl, mix, pctMix) {
 	## calculating IA predicted effects at particular effect concentrations
 	
 	eIndAct <- function(model, param, conc){
+		# vector to matrix in case
+		if (is.vector(conc)) conc <- t(conc)
 		fac <- ncol(conc)
 		lev <- nrow(conc)
 		ia <- rep(1, lev)

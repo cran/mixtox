@@ -27,6 +27,8 @@ ecaPred <- function(effv, sgl, mix, pctMix){
 	}
 
 	eConAdd <- function(model, param, conc){
+		# vector to matrix in case
+		if (is.vector(conc)) conc <- t(conc)
 		fac <- ncol(conc)
 		lev <- nrow(conc)
 		caFun <- as.character(rep(0, lev))

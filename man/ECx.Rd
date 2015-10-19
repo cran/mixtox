@@ -38,7 +38,7 @@ Estimation of Low-Effect Concentrations. Environmental Toxicology and Chemistry 
 \code{\link{CEx}}
 }
 \examples{
-data(cytotox)
+# data(cytotox)
 ## example 1
 # calculate EC50 of heavy metal Ni(2+) on the MCF-7 cells
 model.ni <- cytotox$sgl$model

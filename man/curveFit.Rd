@@ -90,7 +90,7 @@ Syst. 87, 147-154.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
-data(cytotox)
+# data(cytotox)
 ## example 1
 # Fit the concentration-response data of heavy metal Ni(2+) on MCF-7 cells
 # Logit equation is selected as the fitting function with a starting value of 12 and 3.

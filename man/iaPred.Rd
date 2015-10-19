@@ -64,7 +64,7 @@ the number of runs should be in accordance with the length of model based on the
 \code{\link{caPred}}
 }
 \examples{
-data(cytotox)
+# data(cytotox)
 model <- cytotox$sgl$model
 param <- cytotox$sgl$param
 ## example 1

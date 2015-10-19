@@ -124,16 +124,18 @@ curveFit <- function(x, expr, eq = c("Hill", "Weibull", "Logit", "BCW", "BCL", "
 	
 	## checking nls2 package, use the nls2 or built-in nls for curve fitting
 	#if(require(nls2)){
+	dframe <- data.frame(x, y)
+	
 	if(requireNamespace("nls2", quietly = TRUE)){
 		print("use the nls2 package")
 		if(eq == "Hill" || eq == "Weibull" || eq == "Logit"){
 			m <- 2 # the number of parameters
 			mode(param) <- "numeric"
-			fit <- nls2::nls2(fun, start = list(Alpha = param[1], Beta = param[2]), control = nls.control(maxiter = 1000), algorithm = algo)
+			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.control(maxiter = 1000), algorithm = algo)
 		}else if(eq == "BCW" || eq == "BCL" || eq == "GL"){
 			m <- 3 # the number of parameters
 			mode(param) <- "numeric"
-			fit <- nls2::nls2(fun, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control(maxiter = 1000), algorithm = algo)
+			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control(maxiter = 1000), algorithm = algo)
 		}
 		#detach(package: nls2)
 	}else {
@@ -141,11 +143,11 @@ curveFit <- function(x, expr, eq = c("Hill", "Weibull", "Logit", "BCW", "BCL", "
 		if(eq == "Hill" || eq == "Weibull" || eq == "Logit"){
 			m <- 2 # the number of parameters
 			mode(param) <- "numeric"
-			fit <- nls(fun, start = list(Alpha = param[1], Beta = param[2]), control = nls.control())
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.control())
 		}else if(eq == "BCW" || eq == "BCL" || eq == "GL"){
 			m <- 3 # the number of parameters
 			mode(param) <- "numeric"
-			fit <- nls(fun, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control())
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control())
 		}
 	}
 	

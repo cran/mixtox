@@ -56,7 +56,7 @@ mixtures containing partial agonists. J. Theor. Biol. 259, 469-477.
 \code{\link{gcaHill}}
 }
 \examples{
-data(cytotox)
+# data(cytotox)
 model <- cytotox$sgl$model
 param <- cytotox$sgl$param
 

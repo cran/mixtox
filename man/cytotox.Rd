@@ -53,7 +53,7 @@ effect of the \eqn{i^{th}} treatment.
 }
 \source{ The cytotoxicity experiments were conducted in our lab}
 \examples{
-data(cytotox)
+# data(cytotox)
 Ni <- cytotox$Ni
 }
 \keyword{concentration-response data}

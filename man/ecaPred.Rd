@@ -44,7 +44,7 @@
 ## example
 # predict the CA effect at the concentrations that cause 10% and 50% effect of an mixture.
 # each mixture contains eight components. Totally, there are 10 mixtures designed by the udcr.
-data(cytotox)
+# data(cytotox)
 sgl <- cytotox$sgl
 mix <- cytotox$mix
 pct <- cytotox$pct

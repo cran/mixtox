@@ -14,8 +14,8 @@ experimental design, uncertainty characterization, and mixture toxicity predicti
 \tabular{ll}{
 Package: \tab mixtox\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2015-06-01\cr
+Version: \tab 1.1\cr
+Date: \tab 2015-10-19\cr
 License: \tab GPL-2\cr
 }
 (1) Curve fitting of concentration-response data using six sigmoidal equations, 

@@ -46,7 +46,7 @@ concentration-response curves fitted by other equations
 \code{\link{ECx}}
 }
 \examples{
-data(cytotox)
+# data(cytotox)
 
 ## example 1
 # calculate the effect of heavy metal Ni(2+) at the concentration of 0.00005 mol/L on the MCF-7
