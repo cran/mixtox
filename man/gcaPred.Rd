@@ -3,9 +3,9 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Mixture Toxicity Prediction Using GCA (General)}
 \description{Predict the mixture toxicity based on individual 
-			concentration-response information. Six equations (Weibull, Logit, BCW, BCL, GL) are 
-			incorporated to construct the GCA 
-			equation instead of the Hill equation widely used in 
+			concentration-response information. Six equations (Hill,
+			Weibull, Logit, BCW, BCL, GL) are incorporated to construct the GCA 
+			equation instead of the Hill_two equation widely used in 
 			previous studies. The dichotomy 
 			technique is used to solve the constructed equation. 
 			Three optional mixture design methods are provided. One is the arbitrary 
@@ -31,11 +31,10 @@
  predict mixtures containing partial agonists (Howard and Webster, 2009). 
  \deqn{\sum\limits_{i = 1}^n {\frac{{{c_i}}}{{f_i^{ - 1}\left( E \right)}}}  = 1}
  Empirical data were used to fit concentration-response function, and then predict the mixture 
- response using the inverse function. Previous studies used Hill function to fit individual 
+ response using the inverse function. Previous studies used Hill_two function to fit individual 
  concentration response curves in the GCA prediction (Hadrup et al., 2013; Howard et al., 2010). 
- Here, we incorporated other five functions (Weibull, Logit, BCW, BCL, GL) to construct the GCA 
- equation and the dichotomy technique is used to solve the constructed equation. The dichotomy 
- technique is used to solve the constructed equation.
+ Here, we incorporated other six functions (Hill, Weibull, Logit, BCW, BCL, GL) to construct
+ the GCA equation and the dichotomy technique is used to solve the constructed equation. 
  }
 \value{
 \item{x}{ a series of concentrations}
@@ -56,23 +55,21 @@ mixtures containing partial agonists. J. Theor. Biol. 259, 469-477.
 \code{\link{gcaHill}}
 }
 \examples{
-# data(cytotox)
-model <- cytotox$sgl$model
-param <- cytotox$sgl$param
-
 ## example 1
 # using GCA to predict the mixtures designed by equal effect concentration ratio (eecr) at the 
 # effect concentration of EC05 and EC50
-# the eecr mixture design is based on four heavy metals and four ionic liquids(eight factors).
+# the eecr mixture design is based on seven antibiotics(seven factors).
+model <- antibiotox$sgl$model
+param <- antibiotox$sgl$param
 gcaPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 
 ## example 2
 # using GCA to predict the mixtures designed by uniform design concentration ratio (udcr)
-# the udcr mixture design is based on four heavy metals and four ionic liquids (eight factors).
+# the udcr mixture design is based on seven antibiotics(seven factors).
 # five levels (EC05, EC10, EC20, EC30, and EC50 ) are allocated in the uniform table using the 
 # pseudo-level technique (Liang et al., 2001)
-model <- cytotox$sgl$model
-param <- cytotox$sgl$param
+model <- antibiotox$sgl$model
+param <- antibiotox$sgl$param
 effv <- c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.30, 0.30, 0.50, 0.50)
 gcaPred(model, param, mixType = "udcr", effv)
 

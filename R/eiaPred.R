@@ -11,8 +11,11 @@ eiaPred <- function(effv, sgl, mix, pctMix) {
 		for (i in seq(lev)){
 			## IA equation construction
 			for (j in seq(fac)){
+				#if (model[j] == "Hill_two")
+				#	ia[i] <- ia[i] * (1 - (param[j, 2] * conc[i, j] / (param[j, 1] + conc[i, j])))
+				#else 
 				if (model[j] == "Hill")
-					ia[i] <- ia[i] * (1 - (param[j, 1] * conc[i, j] / (param[j, 2] + conc[i, j])))
+					ia[i] <- ia[i] * (1 - 1 / (1 + (param[j, 1] / conc[i, j])^param[j, 2]))
 				else if (model[j] == "Weibull")
 					ia[i] <- ia[i] * (1 - (1 - exp(-exp(param[j, 1] + param[j, 2] * log10(conc[i, j])))))
 				else if (model[j] == "Logit")

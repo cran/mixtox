@@ -50,8 +50,11 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 				fun <- as.character(1)
 				for (k in seq(fac)){
 				
-					if (model[k] == 'Hill')
-						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (', param[k, 2], '* xx / (', param[k, 1], '- xx))', sep = '')
+					#if (model[k] == 'Hill_two')
+					#	fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (', param[k, 1], '* xx / (', param[k, 2], '- xx))', sep = '')
+					#else 
+					if (model[k] == "Hill")
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/', param[k, 1], '/ (1 / xx - 1)^(1 /', param[k, 2], ')', sep = '')
 					else if (model[k] == "Weibull")
 						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (exp(-(-log(log(-1 / (-1 + xx))) +', param[k, 1], ') * log(10) /', param[k, 2], '))', sep = '')
 					else if (model[k] == "Logit")

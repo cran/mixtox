@@ -4,7 +4,7 @@
 \title{Uniform Design Table}
 \description{The good lattice point method with a power generator 
 			was used to construct the uniform 
-			experimental tables . The centered L2-discrepancy (CD) and the symmetric discrepancy 
+			experimental tables . The centered L2-discrepancy (CD2) and the symmetric discrepancy 
 			algorithms (sd2) were employed to measure the uniformity and 
 			find the one with lowest discrepancy.
 			}

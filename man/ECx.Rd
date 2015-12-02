@@ -1,49 +1,58 @@
 \name{ECx}
 \alias{ECx}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Effect Concentration Calculation}
+\title{Effect Concentration Calculation for Monotonic Curves}
 \description{
 Effect concentrations are calculated at particular effects based on the fitting coefficients 
-of six equations (Hill, Weibull, Logit, BCW, BCL, GL)
+of 13 monotonic equations.
 }
 \usage{ECx(model, param, effv)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{model}{character vector of equations: Hill, Weibull, Logit, BCW, BCL, GL}
-  \item{param}{numeric matrix of fitting coefficients with rownames (equation selected) and 
-		colnames (ALpha, Beta, and Gamma).For equations with two parameters, Gamma can be set 
-		as zero or any other numeric value.
+  \item{model}{character vector of equations:("Hill", "Hill_two", "Hill_three", "Hill_four", 
+ "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
+ "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)")}
+  \item{param}{numeric matrix of fitting coefficients with rownames (equations) and 
+		colnames (Alpha, Beta, Gamma, Delta, and Epsilon).
 		}
-  \item{effv}{numeric vector with single or multiple effect values (0 ~ 1)}
+  \item{effv}{numeric vector with single or multiple effect values}
 }
 
-\details{
-effect concentrations will be calculated with provided equations (model), associated fitting 
-parameters (param), and effects (effv). Effect (effv) should be a value(s) between 0~1. For 
-example, \eqn{effv} should be 0.5 if we want to calculate a concentration causes 50\% effect.
+\details{effect concentrations will be calculated with provided equations (model), associated 
+fitting parameters (param), and effects (effv). 
+\eqn{effv} should be 0.5 if we want to calculate a concentration 
+causes 50\% effect.\cr 
+As an example, the inverse function of the six sigmoidal equations are listed as follows:\cr	
+inverse Hill_two: \deqn{{c = \beta E/\left( {\alpha  - E} \right)}}
+inverse Weibull: \deqn{c = {10^{\left( {\ln ( - \ln (1 - E)) - \alpha } \right)/\beta }}}
+inverse Logit: \deqn{c = {10^{\left( {\ln (E/(1 - E)) - \alpha } \right)/\beta }}}
+inverse BCW: \deqn{c = {\left( {(\gamma /\beta )(\ln ( - \ln (1 - E)) - \alpha )
+				+ 1} \right)^{1/\gamma }}}
+inverse BCL: \deqn{c = {((\gamma /\beta )( - \ln ((1 - E)/E) - \alpha ) + 1)^{1/\gamma }}}
+inverse GL: \deqn{c = {10^{(( - \ln ({{(1/E)}^{1/\gamma }} - 1) - \alpha )/\beta )}}}
+where \eqn{E} is effect and \eqn{c} is the concentration.
 }
 
 \value{ a numeric vector of effect concentration(s)}
 \references{
 Hill equation (biochemistry) http://en.wikipedia.org/wiki/Hill_equation_(biochemistry)\cr
-Scholze, M. et al. 2001. A General Best-Fit Method for Concentration-Response Curves and the 
-Estimation of Low-Effect Concentrations. Environmental Toxicology and Chemistry 20(2):448-457.
+Reference to {curveFit}
 }
 \author{xiangwei zhu}
-\note{More equations are needed if we want to calculate effect concentrations based on 
-	concentration-response curves fitted by other equations
+\note{For equations with less parameters, the default can be set as zero or any other 
+ numeric values. 
 	}
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 \code{\link{CEx}}
 }
 \examples{
-# data(cytotox)
 ## example 1
-# calculate EC50 of heavy metal Ni(2+) on the MCF-7 cells
-model.ni <- cytotox$sgl$model
-param.ni <- cytotox$sgl$param
-ECx(model.ni, param.ni, effv = 0.5) 
+# calculate EC5 and EC50 of seven antibiotics on the photobacteria
+model <- antibiotox$sgl$model
+param <- antibiotox$sgl$param
+effv <- c(0.05, 0.5)
+ECx(model, param, effv = c(0.05, 0.50))
 
 ## example 2
 # calculate EC5 and EC50 of four heavy metals and four ionic liquids on the MCF-7 cells

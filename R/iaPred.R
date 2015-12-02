@@ -13,8 +13,11 @@ iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			# IA equation construction
 			# xx means x elsewhere
 			for (j in seq(fac)){
+				#if (model[j] == 'Hill_two')
+				#	iaFun[i] <- paste(iaFun[i], '*', '(1 - (', param[j, 2], '* xx / (', param[j, 1], '+ xx)))', sep = '')
+				#else 
 				if (model[j] == 'Hill')
-					iaFun[i] <- paste(iaFun[i], '*', '(1 - (', param[j, 1], '* xx / (', param[j, 2], '+ xx)))', sep = '')
+					iaFun[i] <- paste(iaFun[i], '*', '(1 - ( 1 / (1 + (', param[j, 1], '/', pctEcx[j, i], '* xx)^', param[j, 2], ')))', sep = '')
 				else if (model[j] == "Weibull")
 					iaFun[i] <- paste(iaFun[i], '*', '(1 - (1 - exp(-exp(', param[j, 1], '+', param[j, 2], '* log10(', pctEcx[j, i], '* xx)))))', sep = '')
 				else if (model[j] == "Logit")

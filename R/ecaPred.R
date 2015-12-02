@@ -36,7 +36,12 @@ ecaPred <- function(effv, sgl, mix, pctMix){
 		for (i in seq(lev)){
 			## CA equation construction
 			for (j in seq(fac)){
-				if (model[j] == "Weibull")
+				#if (model[j] == "Hill_two")
+				#	caFun[i] <- paste(caFun[i], '+', conc[i, j], '/', param[j, 1],  '* xx / (', param[j, 2], '- xx)', sep = '')
+				#else 
+				if (model[j] == "Hill")
+					caFun[i] <- paste(caFun[i], '+', conc[i, j], '/', param[j, 1], '/ ((1 / xx - 1)^(1 /', param[j, 2], '))', sep = '')
+				else if (model[j] == "Weibull")
 					caFun[i] <- paste(caFun[i], '+', conc[i, j], '/10^((log(-log(1 - xx))-', param[j, 1], ') /', param[j, 2], ')', sep = '')
 				else if (model[j] == "Logit")
 					caFun[i] <- paste(caFun[i], '+', conc[i, j], '/ 10^((log(xx / (1 - xx)) - ', param[j, 1], ') /', param[j, 2], ')', sep = '')

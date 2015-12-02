@@ -13,15 +13,15 @@ four ionic liquids are 1-Octyl-3-methylimidazolium chloride (Omim),
 (Emim), and 1-Hexyl-3-Methylimidazolium tetrafluoroborate (Hmim). \cr
 The concentration-response data include the cytotoxicity of these eight compounds 
 and ten mixtures designed by udcr.\cr
-The fitting information of eight chemicals and 10 uncr mixtures. 
+The fitting information of eight chemicals and 10 udcr mixtures. 
 }
 \usage{data(cytotox)}
 \format{
-  A list with concentration-response data of 8 chemicals and 10 uncr mixtures and their associated
+  A list with concentration-response data of 8 chemicals, 10 udcr mixtures, and associated
   fitting information.
   \describe{
-    \item{\code{Ni$x}}{a numeric vector of concentrations.}
-    \item{\code{Ni$y}}{a numeric matrix of response values, that is relative change in volume.}
+    \item{\code{Ni$x}}{a numeric vector of concentrations}
+    \item{\code{Ni$y}}{a numeric matrix of responses}
 	\item{\code{Ni$name}}{name of test substance}
 	\item{\code{Ni$concNum}}{the number of concentrations}
 	\item{\code{Ni$tierNum}}{the number of repetitions}
@@ -30,8 +30,7 @@ The fitting information of eight chemicals and 10 uncr mixtures.
 	\item{\code{sgl$model}}{model used to fit the concentration-response data of individual 
 		chemicals on MCF-7
 		}
-	\item{\code{sgl$param}}{fitted coefficients of the concentration-response curves corresponding 
-		to sgl$model
+	\item{\code{sgl$param}}{fitted coefficients of curves corresponding 
 		}
 	
 	\item{\code{mix$model}}{model used to fit the concentration-response data of udcr mixtures on 
@@ -40,12 +39,12 @@ The fitting information of eight chemicals and 10 uncr mixtures.
 	\item{\code{mix$param}}{fitted coefficients of the concentration-response curves corresponding
 		to mix$model
 		}
-	\item{\code{$pct}}{the percent of individual chemicals in the uncr mixtures }	
+	\item{\code{$pct}}{the percentage of individual chemicals in the udcr mixtures }	
   }
 }
 \details{
-The monotonic concentration-response data need to be scaled into [0, 1] using the 
-following equation:
+The monotonic concentration-response data need to be scaled into [0, 1] to suit some equaitons(
+e.g., Weibull and Logit) using the following equation:
 \deqn{E = \frac{{{I_0} - {I_i}}}{{{I_0}}}}
 where \eqn{I_0} is the average of controls for inhibition test or the average 
 of the maximum effect for the stimulation test and \eqn{I_i} the average 
@@ -53,7 +52,8 @@ effect of the \eqn{i^{th}} treatment.
 }
 \source{ The cytotoxicity experiments were conducted in our lab}
 \examples{
-# data(cytotox)
+# example 1
+## Retrive the toxicity data of Ni on MCF-7.
 Ni <- cytotox$Ni
 }
 \keyword{concentration-response data}

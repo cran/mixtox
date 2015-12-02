@@ -1,22 +1,22 @@
 \name{gcaHill}
 \alias{gcaHill}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Mixture Toxicity Prediction Using GCA (Hill)}
+\title{Mixture Toxicity Prediction Using GCA (Hill_two)}
 \description{Predict the mixture toxicity based on individual concentration-response information 
-			fitted by Hill equation. An explicit formula for gca prediction were used instead of 
-			the dichotomy algorithm in gcaPred. Three 
+			fitted by Hill_two equation. An explicit formula for gca prediction were used 
+			instead of the dichotomy algorithm in gcaPred. Three 
 			optional mixture design methods are provided. 
 			One is the arbitrary concentration ratio (acr) for mixture components.\cr
-			Users can arbitrarily deign random ratios for components in the mixture. Other two 
+			Users can deign random ratios for components in the mixture. Other two 
 			options are equal effect concentration ratio (eecr) and uniform design concentration 
 			ratio (udcr).
 			}
 \usage{gcaHill(model, param, mixType = c("acr", "eecr", "udcr"), effv)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-     \item{model}{character vector of equation names, only Hill}
-  \item{param}{numeric matrix of fitting coefficients with rownames (equation selected) and 
-		colnames (ALpha, Beta).
+     \item{model}{character vector of equation names, just Hill_two}
+  \item{param}{numeric matrix of fitting coefficients with rownames (equations) and 
+		colnames (Alpha, Beta).
 		}
   \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio; 
 		eecr: equal effect concentration ratio; udcr: uniform design concentration ratio.}
@@ -30,7 +30,8 @@
 		{{1 + \sum\limits_{i = 1}^n {\frac{{{c_i}}}{{{K_i}}}} }}}
 		where \eqn{c_i} is the concentration of component \eqn{i} in the mixture. Parameter 
 		\eqn{\alpha _i} and \eqn{K_i} are fitted coefficient of \eqn{i^{th}} component, which are 
-		the same as \eqn{\alpha} and \eqn{\beta} of Hill equation.	
+		the same as \eqn{\beta} and \eqn{\alpha} in Hill_two equation. Right, the \eqn{\alpha _i} 
+		and \eqn{K_i} are corresponding to \eqn{\beta} and \eqn{\alpha} in Hill_two equation.
 		}
 \value{
 \item{x}{ a series of concentrations}
@@ -51,14 +52,14 @@ prediction of sex hormone synthesis in vitro. PLoS One 8, e70490.
 }
 \author{xiangwei zhu}
 \note{
- Only for concentration-response curves fitted by the Hill equation.
+ Only for concentration-response curves fitted by the Hill_two equation in curveFit.
 }
 \seealso{
 \code{\link{gcaPred}}
 }
 \examples{
-model <- c("Hill", "Hill", "Hill", "Hill")
-param <- matrix(c(0.97, 3.94e-5, 0, 1.50, 5.16e-4, 0, 1.04, 3.43e-6, 0, 0.77, 9.18e-6, 0), 
+model <- c("Hill_two", "Hill_two", "Hill_two", "Hill_two")
+param <- matrix(c(3.94e-5, 0.97, 0, 5.16e-4, 1.50, 0, 3.43e-6, 1.04, 0, 9.18e-6, 0.77, 0), 
 				nrow = 4, ncol = 3, byrow = TRUE)
 rownames(param) <- c('Ni', 'Zn', 'Cu', 'Mn')
 colnames(param) <- c('Alpha', 'Beta', 'Gamma')
@@ -86,7 +87,7 @@ gcaHill(model, param, mixType = "acr", effv)
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ generalized concentration addition }
-\keyword{ Hill equation }
+\keyword{ Hill_two equation }
 \keyword{ equal effect concentration ratio }
 \keyword{ uniform design concentration ratio }
 \keyword{ arbitrary concentration ratio }

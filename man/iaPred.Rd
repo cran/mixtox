@@ -1,11 +1,12 @@
 \name{iaPred}
 \alias{iaPred}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Mixture Toxicity Prediction Using IA}
-\description{Predict the mixture toxicity based on individual concentration-response information. 
-			Three optional mixture design methods are provided. One is the arbitrary concentration
-			ratio (acr) for mixture components. Users can arbitrarily deign random ratios for
-			components in the mixture. Other two options are equal effect concentration ratio(eecr)
+\title{Mixture Toxicity Prediction Using Independent Action}
+\description{Predict the mixture toxicity based on individual concentration-response information 
+             using independent action (IA). Three optional mixture design methods are provided. 
+			 One is the arbitrary concentration 
+			ratio (acr) for mixture components. Users can deign random ratios for
+		components in the mixture. Other two options are equal effect concentration ratio(eecr) 
 			and uniform design concentration ratio (udcr).
 			}
 \usage{iaPred(model, param, mixType = c("acr", "eecr", "udcr"), effv)}
@@ -17,12 +18,12 @@
 		set as zero or any other numeric value.
 		}
   \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio;  
-		eecr: equal effect concentration ratio; 
+		eecr: equal effect concentration ratio;
 		udcr: uniform design concentration ratio.
 		}
-  \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
+  \item{effv}{numeric vector with single or multiple effect values}
 }
-\details{Independent action (IA) is designed for mixtures of chemicals that have distinct 
+\details{IA is designed for mixtures of chemicals that have distinct 
 		mechanisms of action. The IA model is commonly defined as:
 		\deqn{{\rm{E}}({c_{mix}}) = 1 - (1 - {\rm{E}}({c_1}))(1 - {\rm{E}}({c_2})) \cdot  
 		\cdot  \cdot (1 - {\rm{E}}({c_n})) = 1 - \prod\limits_{i = 1}^n {\left( {1 - 
@@ -39,9 +40,9 @@
 		}
 \value{
 \item{ia}{ a series of effect concentrations predicted by IA}
-\item{e}{a series of effects associated with the effect concentrations in ia}
+\item{e}{a series of effects associated with the effect concentrations in IA}
 \item{pct}{the concentration ratio (percent) of every component in the mixture}
-\item{uniTab}{the uniform design table used to construct the mixture when mixType is 'udcr'}
+\item{uniTab}{the uniform design table to construct the mixture when mixType is 'udcr'}
 }
 \references{
 Liang, Yi-zeng, Kai-tai Fang, and Qing-song Xu. 2001. Uniform Design and Its Applications in 
@@ -55,8 +56,9 @@ conceptual framework. Environmental Science and Technology. 46, 2564-2573.
 Note that effv is dependent on the mixType.
 if the mixType is acr, the length of effv should be the same as that of model. 
 if the mixType is eecr, effv should contain at least one value
-if the mixTpe is udcr, elements in effv are levels, the length of effv is the number of runs. 
-the number of runs should be in accordance with the length of model based on the uniform design
+if the mixTpe is udcr, elements in effv are levels, the length of effv is the same as 
+the number of runs. the number of runs should be in accordance with the length of 
+model based on the uniform design.
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
@@ -75,20 +77,20 @@ iaPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 
 ## example 2
 # using IA to predict the mixtures designed by uniform design concentration ratio (udcr)
-# the udcr mixture design is based on four heavy metals and four ion liquids (eight factors).
+# the udcr mixture design is based on seven antibiotics (seven factors).
 # five levels (EC05, EC10, EC20, EC30, and EC50 ) are allocated in the uniform table using the 
 # pseudo-level technique (Liang et al., 2001)
-model <- cytotox$sgl$model
-param <- cytotox$sgl$param
+model <- antibiotox$sgl$model
+param <- antibiotox$sgl$param
 effv <- c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.30, 0.30, 0.50, 0.50)
 iaPred(model, param, mixType = "udcr", effv)
 
 ## example 3
 # using IA to predict the mixtures designed by arbitrary concentration ratio (acr)
-# the udcr mixture design is based on four heavy metals (four factors).
+# the udcr mixture design is based on four antibiotics (four factors).
 # the every component in the mixture shares exactly the same ratio (0.25) 
-model <- cytotox$sgl$model[1 : 4]
-param <- cytotox$sgl$param[1 : 4, ]
+model <- antibiotox$sgl$model[1 : 4]
+param <- antibiotox$sgl$param[1 : 4, ]
 effv <- c(0.25, 0.25, 0.25, 0.25)
 iaPred(model, param, mixType = "acr", effv)
 }

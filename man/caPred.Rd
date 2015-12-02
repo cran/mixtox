@@ -1,10 +1,10 @@
 \name{caPred}
 \alias{caPred}
-\title{Mixture Toxicity Prediction Using CA}
+\title{Mixture Toxicity Prediction Using Concentration Addition}
 \description{Predict the mixture toxicity based on individual concentration-response 
 			information. Three optional mixture design methods are provided. One 
 			is the arbitrary concentration ratio (acr) for mixture components. Users can 
-			arbitrarily deign a random ratio for each
+			deign a random ratio for each
 			component in the mixture. Other two options are equal effect 
 			concentration ratio (eecr) and uniform design concentration ratio (udcr).
 }
@@ -64,13 +64,12 @@ the number of runs should be in accordance with the length of model based on the
 \code{\link{iaPred}}
 }
 \examples{
-# data(cytotox)
-model <- cytotox$sgl$model
-param <- cytotox$sgl$param
 ## example 1
 # using CA to predict the mixtures designed by equal effect concentration ratio (eecr) at the
 # effect concentration of EC05 and EC50
-# the eecr mixture design is based on four heavy metals and four ionic liquids(eight factors).
+# the eecr mixture design is based on seven antibiotics(seven factors).
+model <- antibiotox$sgl$model
+param <- antibiotox$sgl$param
 caPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 
 ## example 2
@@ -85,10 +84,10 @@ caPred(model, param, mixType = "udcr", effv)
 
 ## example 3
 # using CA to predict the mixtures designed by arbitrary concentration ratio (acr)
-# the udcr mixture design is based on four heavy metals and one ionic liquid (five factors).
+# the udcr mixture design is based on five antibiotics (five factors).
 # the every component in the mixture shares exactly the same ratio (0.20) 
-model <- cytotox$sgl$model[1 : 5]
-param <- cytotox$sgl$param[1 : 5, ]
+model <- antibiotox$sgl$model[1 : 5]
+param <- antibiotox$sgl$param[1 : 5, ]
 effv <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 caPred(model, param, mixType = "acr", effv)
 }

@@ -43,8 +43,6 @@ At least three repetitions are required to calculate the NOEC and LOEC
 \code{\link{curveFit}}
 }
 \examples{
-# data(cytotox)
-
 ## example 1
 # calcualte the NOEC and LOEC of heavy metal Ni(2+) on the MCF-7 cells at the default significance 
 # level of 0.05
@@ -53,10 +51,10 @@ expr <- cytotox$Ni$y
 NOEC(x, expr)
 
 ## example 2
-# calcualte the NOEC and LOEC of heavy metal Cu(2+) on the MCF-7 cells at the default significance
+# calcualte the NOEC and LOEC of Neomycin sulfate on the phtotobacteria at the significance 
 # level of 0.01
-x <- cytotox$Cu$x
-expr <- cytotox$Cu$y
+x <- antibiotox$NEO$x
+expr <- antibiotox$NEO$y
 NOEC(x, expr, sigLev = 0.01)
 }
 \keyword{NOEC}

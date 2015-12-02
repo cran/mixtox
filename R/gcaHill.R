@@ -1,5 +1,5 @@
 gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
-	## generalized concentration addition based only on Hill function
+	## generalized concentration addition based only on Hill_two function
 	gconcAdd <- function(model, param, pctEcx){
 	# concentration addition
 		refEffv <- c(0.10, 0.50)
@@ -16,7 +16,7 @@ gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 		
 		for(i in seq(lev)){
 			for(j in seq(pointNum)){
-				emix[i, j] <- sum(param[, 1] * conc[j] * pctEcx / param[, 2]) / (1 + sum(conc[j] * pctEcx / param[, 2]))
+				emix[i, j] <- sum(param[, 2] * conc[j] * pctEcx / param[, 1]) / (1 + sum(conc[j] * pctEcx / param[, 1]))
 			}
 		}
 		list(x = conc, y = emix)
