@@ -1,4 +1,4 @@
-iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
+iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints, lb = 1e-9, ub = 6){
 	## independent action prediction
 	## source('ECx.R')
 	
@@ -31,8 +31,8 @@ iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			}
 		}
 		
-		a <- 1e-9
-		b <- 0.1
+		a <- lb
+		b <- ub
 		eps <- 1e-10		
 		root <- matrix(0, lev, ncol(ecPoints))
 		
@@ -53,7 +53,9 @@ iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 	
 	if (length(model) >= 2){
 		## at these effect points the effect concentrations will be predicted
-		effPoints <- c(.025, .03, .05, .10, .15, .20, .25, .30, .35, .40, .45, .47, .50, .52, .55, .60, .65, .70, .75, .80, .85, .90)
+		if(missing(effPoints)){
+			effPoints <- c(.025, .03, .05, .10, .15, .20, .25, .30, .35, .40, .45, .47, .50, .52, .55, .60, .65, .70, .75, .80, .85, .90)
+		}
 		if (mixType == 'eecr'){
 			## equal effect concentration ratio
 			ecx <- ECx(model, param, effv)

@@ -1,17 +1,18 @@
 \name{hormesis}
 \alias{hormesis}
 \docType{data}
-\title{Non-monotonic concentration-response data}
+\title{Non-monotonic Concentration-response Data}
 \description{
 Two ionic liquids: 1-Octyl-3-methylimidazolium chloride (Omim) and 
 1-Hexyl-3-Methylimidazolium tetrafluoroborate (Hmim). 
 Two organic solvents: Acetonitrile(ACN) and acetone.\cr
-The concentration-response data include these four compounds on firefly luciferase. 
-The fitting information of those datasets using non-monotonic equations. 
+The concentration-response data include the effect of these four compounds 
+on firefly luciferase. 
+Those concentration-responses were fitted using non-monotonic models. 
 }
 \usage{data(hormesis)}
 \format{
-  A list with non-monotonic concentration-response data of four chemicals and associated 
+  A list with non-monotonic concentration-responses of four chemicals and associated 
   fitting information.
   \describe{
     \item{\code{OmimCl$x}}{a numeric vector of concentrations}
@@ -30,7 +31,7 @@ The fitting information of those datasets using non-monotonic equations.
   }
 }
 \details{
-The non-monotonic concentration-response data need to be scaled into [0, 1] using the 
+The non-monotonic concentration-responses need to be scaled into [0, 1] using the 
 following equation:
 \deqn{E = \frac{{{I_0} - {I_i}}}{{{I_0}}}}
 where \eqn{I_0} is the average of controls for inhibition test or the average 
@@ -45,11 +46,11 @@ and hormetic quantities exploration. Ecotoxicol. Environ. Saf. 89:130-136.
 \examples{
 #example 1
 ## Retrive the toxicity data of acetonitrile on firefly luciferase.
-ACN <- hormesis$ACN
+hormesis$ACN
 
 #example 2
 ## Retrive the minx of OmimCl, HmimCl, ACN, and Acetone
-minx <- hormesis$sgl$minx
+hormesis$sgl$minx
 }
 \keyword{hormesis}
 \keyword{non-monotonic concentration-response data}

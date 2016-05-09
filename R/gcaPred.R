@@ -1,6 +1,6 @@
-gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
+gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = c(0.1, 0.50, 0.80), lb = 1E-7, ub = 0.9){
 	# generalized concentration addition prediction
-	# 
+	#
 	## source('ECx.R')
 	
 	dichotomy <- function(fun, a, b, eps){
@@ -29,16 +29,17 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 	}
 
 
-	gConcAdd <- function(model, param, pctEcx){
+	gConcAdd <- function(model, param, pctEcx, refEffv, lb, ub){
 		# generalized concentration addition
-		refEffv <- c(0.05, 0.50, 0.90)
+		#refEffv <- c(0.05, 0.50, 0.90)
 		pointNum <- 22
 		#refEffv <- 0.5
 		#dilution <- 20
 
 		refEcx <- ECx(model, param, refEffv)
-		refMin <- min(refEcx)
-		refMax <- max(refEcx)
+		refEcx_new <- refEcx[refEcx > 0]
+		refMin <- min(refEcx_new)
+		refMax <- max(refEcx_new)
 		conc <- 10^(seq(log10(refMin), log10(refMax), length.out = pointNum))
 		#conc <- 10^(seq(log10(refMin / dilution), log10(refMax * dilution), length.out = pointNum))
 		fac <- nrow(pctEcx)
@@ -50,10 +51,27 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 				fun <- as.character(1)
 				for (k in seq(fac)){
 				
-					#if (model[k] == 'Hill_two')
-					#	fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (', param[k, 1], '* xx / (', param[k, 2], '- xx))', sep = '')
-					#else 
-					if (model[k] == "Hill")
+					if (model[k] == 'Hill_two')
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (', param[k, 1], '* xx / (', param[k, 2], '- xx))', sep = '')
+					else if (model[k] == "Hill_three")
+						# inv(y) = 1/Gamma*(1+(Alpha/x)^Beta)
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (1 /', param[k, 3], '* (1 + (', param[k, 1], '/ xx)^', param[k, 2], '))', sep  = '')
+					else if (model[k] == "Hill_four")
+						# inv(y) = 1/(Delta+(Gamma-Delta)/(1+(Alpha/x)^Beta))
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '* (', param[k, 4], '+ (', param[k, 3], '-', param[k, 4], ') / (1 + (', param[k, 1], '/ xx)^', param[k, 2], '))', sep = '')
+					else if (model[k] == "Weibull_three")
+						#inv(y) = 1/Gamma/(1-exp(-exp(Alpha+Beta*log(x)/log(10))))
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '*', param[k, 3], '* (1 - exp(-exp(', param[k, 1], '+', param[k, 2], '*log(xx)/log(10))))', sep = '')
+					else if (model[k] == "Weibull_four")
+						#inv(y) = 1/(Gamma+(Delta-Gamma)*exp(-exp(Alpha+Beta*log(x)/log(10))))
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '*(', param[k, 3], '+(', param[k, 4], '-', param[k, 3], ')*exp(-exp(', param[k, 1], '+', param[k, 2], '* log(xx) / log(10))))', sep = '')
+					else if (model[k] == "Logit_three")
+						# inv(y) = 1/Gamma*(1+exp(-Alpha-Beta*log(x)/log(10)))
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '*', param[k, 3], '/ (1 + exp(-', param[k, 1], '-', param[k, 2], '* log(xx) / log(10)))', sep = '')
+					else if (model[k] == "Logit_four")
+						# inv(y) = 1/(Delta+(Gamma-Delta)/(1+exp(-Alpha-Beta*log(x)/log(10))))
+						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '*(', param[k, 4], '+(', param[k, 3], '-', param[k, 4], ')/(1 + exp(-', param[k, 1], '-', param[k, 2], '*log(xx) / log(10))))', sep = '')
+					else if (model[k] == "Hill")
 						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/', param[k, 1], '/ (1 / xx - 1)^(1 /', param[k, 2], ')', sep = '')
 					else if (model[k] == "Weibull")
 						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (exp(-(-log(log(-1 / (-1 + xx))) +', param[k, 1], ') * log(10) /', param[k, 2], '))', sep = '')
@@ -67,9 +85,9 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 						fun <- paste(fun, '-', pctEcx[k, i] * conc[j], '/ (exp(-log(10) * (', param[k, 1], '+ log(exp(-log(xx) /', param[k, 3], ') - 1)) /', param[k, 2], '))', sep = '')
 				}
 				
-				a = 0.00000001
-				b = 0.90
-				eps = 1e-10
+				a <- lb
+				b <- ub
+				eps <- 1e-10
 				#f = function(xx) eval(parse(text = fun))
 				#root[i, j] <- uniroot(f, c(a, b), tol = eps)$root
 				root[i, j] <- dichotomy(fun, a, b, eps)
@@ -89,8 +107,8 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			mixEcx <- colSums(ecx)
 			if (length(effv) > 1) pctEcx <- ecx / t(replicate(num, mixEcx)) else pctEcx <- ecx / mixEcx
 			rownames(pctEcx) <- rownames(ecx)
-			gca <- gConcAdd(model, param, pctEcx)
-			rownames(gca$y) <- paste('gca.EE', effv * 100, sep = '')
+			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
+			rownames(gca$y) <- paste('gca.EE', effv, sep = '')
 			designTable <- NULL
 			
 		}else if (mixType == 'acr'){
@@ -99,7 +117,7 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			if(length(model) != length(effv)) stop('no consistence')
 			
 			pctEcx <- t(t(effv / sum(effv)))
-			gca <- gConcAdd(model, param, pctEcx)
+			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
 			rownames(gca$y) <- 'gca.acr'
 			designTable <- NULL
 			
@@ -129,7 +147,7 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			mixEcx <- colSums(ecxMix)
 			pctEcx <- ecxMix / t(replicate(fac, mixEcx))
 
-			gca <- gConcAdd(model, param, pctEcx)
+			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
 			rowName <- paste('gca.U', seq(lev), sep = '')
 			rownames(gca$y) <- rowName
 			rownames(pctEcx) <- rownames(ecx)
@@ -140,5 +158,5 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 	}else {
 		stop('needs more than one component')
 	}
-	list(x = gca$x, e = gca$y, pct = pctEcx, unitab = designTable)
+	list(x = gca$x, e = gca$y, pct = t(pctEcx), unitab = designTable)
 }

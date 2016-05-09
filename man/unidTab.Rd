@@ -11,7 +11,7 @@
 \usage{unidTab(lev, fac, algo = "cd2")}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{lev}{the number of levels or runs}
+  \item{lev}{the number of runs (levels or pseudo-levels)}
   \item{fac}{the number of factors}
   \item{algo}{algorithms used to calculate the discrepancy. "cd2": the centered L2-discrepancy 
 		algorithm. "sd2": the symmetric discrepancy algorithm.
@@ -48,8 +48,8 @@
 		the number of input variables (factors), respectively.		
 		}
 \value{
-  \item{T }{the uniform table constructed. It may contain one or more uniform 
-		table with the same discrepancy
+  \item{T }{the selected uniform table(s) . It may contain one or more uniform 
+		tables with the same discrepancy
 		}
   \item{D }{the discrepancy of the constructed uniform table}
 }
@@ -78,5 +78,5 @@ unidTab(lev = 37, fac = 13, algo = "cd2" )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ uniform design }
+\keyword{uniform design}
 \keyword{ good lattice point }

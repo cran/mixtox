@@ -1,13 +1,14 @@
-gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
+gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = c(0.10, 0.50)){
 	## generalized concentration addition based only on Hill_two function
-	gconcAdd <- function(model, param, pctEcx){
+	gconcAdd <- function(model, param, pctEcx, refEffv){
 	# concentration addition
-		refEffv <- c(0.10, 0.50)
+		
 		pointNum <- 22
 		#dilution = 20
 		refEcx <- ECx(model, param, refEffv)
-		refMin <- min(refEcx) # need to expain
-		refMax <- max(refEcx)
+		refEcx_new <- refEcx[refEcx > 0]
+		refMin <- min(refEcx_new)
+		refMax <- max(refEcx_new)
 		#conc <- 10^(seq(log10(refMin / dilution), log10(refMax * dilution), length.out = pointNum))
 		conc <- 10^(seq(log10(refMin / 2), log10(refMax * 4), length.out = pointNum))
 		fac <- nrow(pctEcx)
@@ -33,8 +34,8 @@ gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			mixEcx <- colSums(ecx)
 			if (length(effv) > 1) pctEcx <- ecx / t(replicate(num, mixEcx)) else pctEcx <- ecx / mixEcx
 			rownames(pctEcx) <- rownames(ecx)
-			gca <- gconcAdd(model, param, pctEcx)
-			rowName <- paste('gca.EE', effv * 100, sep = '')
+			gca <- gconcAdd(model, param, pctEcx, refEffv)
+			rowName <- paste('gca.EE', effv, sep = '')
 			rownames(gca$y) <- rowName
 			designTable <- NULL
 			
@@ -42,7 +43,7 @@ gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			## arbitrary concentration ratio
 			if(length(model) != length(effv)) stop('no consistence')
 			pctEcx <- t(t(effv / sum(effv)))
-			gca <- gconcAdd(model, param, pctEcx)
+			gca <- gconcAdd(model, param, pctEcx, refEffv)
 			rownames(gca$y) <- 'ca.acr'
 			designTable <- NULL
 			
@@ -70,7 +71,7 @@ gcaHill <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 			
 			mixEcx <- colSums(ecxMix)
 			pctEcx <- ecxMix / t(replicate(fac, mixEcx))
-			gca <- gconcAdd(model, param, pctEcx)
+			gca <- gconcAdd(model, param, pctEcx, refEffv)
 			rowName <- paste('ca.U', seq(lev), sep = '')
 			rownames(gca$y) <- rowName
 			rownames(pctEcx) <- rownames(ecx)

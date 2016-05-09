@@ -1,27 +1,32 @@
 \name{iaPred}
 \alias{iaPred}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Mixture Toxicity Prediction Using Independent Action}
-\description{Predict the mixture toxicity based on individual concentration-response information 
-             using independent action (IA). Three optional mixture design methods are provided. 
-			 One is the arbitrary concentration 
-			ratio (acr) for mixture components. Users can deign random ratios for
-		components in the mixture. Other two options are equal effect concentration ratio(eecr) 
-			and uniform design concentration ratio (udcr).
+\title{Mixture Toxicity Prediction Based on Independent Action}
+\description{Predict the mixture toxicity based on individual concentration-response 
+           information fitted only based on the following six models: Hill, 
+		   Weibull, Logit, BCW, BCL, and GL. Three optional mixture design methods 
+			are provided:(1)arbitrary concentration ratio (acr), users can set 
+			an arbitary proportion for each component in a mixture; (2)equal effect 
+			concentration ratio (eecr); (3) uniform design concentration ratio (udcr).
 			}
-\usage{iaPred(model, param, mixType = c("acr", "eecr", "udcr"), effv)}
+\usage{iaPred(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints, 
+		lb = 1e-9, ub = 6)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{model}{ character vector of equations: Hill, Weibull, Logit, BCW, BCL, GL}
+  \item{model}{ character vector of models: Hill, Weibull, Logit, BCW, BCL, GL}
   \item{param}{numeric matrix of fitting coefficients with row names (selected equations) and 
 		column names (Alpha, Beta, and Gamma). For equations with two parameters, Gamma can be 
-		set as zero or any other numeric value.
+		set to zero or any other numeric value.
 		}
-  \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio;  
+  \item{mixType}{experimental design of the mixture. 
+		acr: arbitrary concentration ratio;  
 		eecr: equal effect concentration ratio;
 		udcr: uniform design concentration ratio.
 		}
   \item{effv}{numeric vector with single or multiple effect values}
+  \item{effPoints}{numeric vector [0 ~ 1] to predict effect concentrations.}
+  \item{lb}{lower bound for solving constructed IA using diochotomy method.}
+  \item{ub}{upper bound bound for solving constructed IA using diochotomy method.}
 }
 \details{IA is designed for mixtures of chemicals that have distinct 
 		mechanisms of action. The IA model is commonly defined as:
@@ -36,12 +41,12 @@
 		\deqn{x\%  = 1 - \prod\limits_{i = 1}^n {\left( {1 - {f_i}\left( {{p_i}\left( 
 		{E{C_{x,mix}}} \right)} \right)} \right)}}
 		This equation can be used to predict the combined effects of mixture-components based
-		on IA. The dichotomy technique can be used to solve the constructed equation.
+		on IA. The dichotomy technique is used to solve the constructed equation.
 		}
 \value{
 \item{ia}{ a series of effect concentrations predicted by IA}
-\item{e}{a series of effects associated with the effect concentrations in IA}
-\item{pct}{the concentration ratio (percent) of every component in the mixture}
+\item{e}{a series of effects (effPoints) associated with the effect concentrations in ia}
+\item{pct}{the proportion of every component in a mixture}
 \item{uniTab}{the uniform design table to construct the mixture when mixType is 'udcr'}
 }
 \references{
@@ -55,6 +60,7 @@ conceptual framework. Environmental Science and Technology. 46, 2564-2573.
 \note{
 Note that effv is dependent on the mixType.
 if the mixType is acr, the length of effv should be the same as that of model. 
+when a total ratio was less than 100%, each ratio will be adjusted to totally make 100%.\cr
 if the mixType is eecr, effv should contain at least one value
 if the mixTpe is udcr, elements in effv are levels, the length of effv is the same as 
 the number of runs. the number of runs should be in accordance with the length of 
@@ -67,12 +73,13 @@ model based on the uniform design.
 }
 \examples{
 # data(cytotox)
-model <- cytotox$sgl$model
-param <- cytotox$sgl$param
+
 ## example 1
 # using IA to predict the mixtures designed by equal effect concentration ratio (eecr) at the 
 # effect concentration of EC05 and EC50
 # the eecr mixture design is based on four heavy metals and four ion liquids(eight factors).
+model <- cytotox$sgl$model
+param <- cytotox$sgl$param
 iaPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 
 ## example 2

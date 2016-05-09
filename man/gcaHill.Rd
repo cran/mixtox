@@ -11,7 +11,7 @@
 			options are equal effect concentration ratio (eecr) and uniform design concentration 
 			ratio (udcr).
 			}
-\usage{gcaHill(model, param, mixType = c("acr", "eecr", "udcr"), effv)}
+\usage{gcaHill(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = c(0.10, 0.50))}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
      \item{model}{character vector of equation names, just Hill_two}
@@ -21,6 +21,7 @@
   \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio; 
 		eecr: equal effect concentration ratio; udcr: uniform design concentration ratio.}
   \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
+  \item{refEffv}{to determine the concentration ranges for predicting effect.}
 }
 \details{The generalized concentration addition (GCA) model was proposed by Howard and Webster 
 		to predict mixtures containing partial agonists (Howard and Webster, 2009). Empirical 
@@ -87,9 +88,8 @@ gcaHill(model, param, mixType = "acr", effv)
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ generalized concentration addition }
-\keyword{ Hill_two equation }
+\keyword{ Hill_two }
 \keyword{ equal effect concentration ratio }
 \keyword{ uniform design concentration ratio }
 \keyword{ arbitrary concentration ratio }
 \keyword{ uniform design table}
-\keyword{ mixture effects}

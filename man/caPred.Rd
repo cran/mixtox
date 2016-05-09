@@ -1,25 +1,27 @@
 \name{caPred}
 \alias{caPred}
-\title{Mixture Toxicity Prediction Using Concentration Addition}
-\description{Predict the mixture toxicity based on individual concentration-response 
-			information. Three optional mixture design methods are provided. One 
-			is the arbitrary concentration ratio (acr) for mixture components. Users can 
-			deign a random ratio for each
-			component in the mixture. Other two options are equal effect 
-			concentration ratio (eecr) and uniform design concentration ratio (udcr).
+\title{Mixture Toxicity Prediction Based on Concentration Addition}
+\description{Predicting mixture toxicity based on individual concentration-response 
+			information fitted only based on the following six models: Hill, 
+			Weibull, Logit, BCW, BCL, and GL. Three optional mixture design methods 
+			are provided:(1)arbitrary concentration ratio (acr), users can set 
+			an arbitary proportion for each component in a mixture; (2)equal effect 
+			concentration ratio (eecr); (3) uniform design concentration ratio (udcr).
 }
-\usage{caPred(model, param, mixType = c("acr", "eecr", "udcr"), effv)}
+\usage{caPred(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{model}{character vector of equation names: Hill, Weibull, Logit, BCW, BCL, GL}
-  \item{param}{numeric matrix of fitting coefficients with row names (equation selected) and 
-		column names (Alpha, Beta, and Gamma). For equations with only two parameters, Gamma can 
-		be set as zero or any other numeric value.}
+  \item{model}{vector of models: Hill, Weibull, Logit, BCW, BCL, and GL}
+  \item{param}{numeric matrix of fitting coefficients with row names (model selected) and 
+		column names (Alpha, Beta, and Gamma). For models with only two parameters (i.e., 
+		Hill, Weibull, and Logit), Gamma can be set to zero or any other numeric value.}
   \item{mixType}{experimental design of the mixture. 
 			acr: arbitrary concentration ratio; 
 			eecr: equal effect concentration ratio; 
 			udcr: uniform design concentration ratio.}
-  \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
+  \item{effv}{numeric vector with single or multiple effects (0 ~ 1).}
+  \item{effPoints}{numeric vector [0 ~ 1] of effects to predict 
+        effect concentrations.}
 }
 \details{Concentration addition (CA) is designed for mixtures of chemicals that have similar 
 		mechanisms of action. For a well-defined mixture (e.g., a mixture of n components), 
@@ -38,9 +40,9 @@
 				\right)^{ - 1}}}
 }
 \value{
-\item{ca}{ a series of effect concentrations predicted by CA}
-\item{e}{a series of effects associated with the effect concentrations in ca}
-\item{pct}{the concentration ratio (percent) of every component in the mixture}
+\item{ca}{ a series of effect concentrations predicted by CA at effPoints}
+\item{e}{a series of effects (effPoints) associated with the effect concentrations in ca}
+\item{pct}{the proportion of every component in a mixture}
 \item{uniTab}{the uniform design table used to construct the mixture when mixType is 'udcr'}
 }
 \references{
@@ -54,8 +56,14 @@ mixtures: A conceptual framework. Environmental Science and Technology. 46, 2564
 \note{
 Note that effv is dependent on the mixType. 
 if the mixType is acr, the length of effv should be the same as that of model. 
-if the mixType is eecr, effv should contain at least one value 
-if the mixTpe is udcr, elements in effv are levels, the length of effv is the number of runs. 
+when a total ratio was less than 100%, each ratio will be adjusted to make 100%.\cr
+if the mixType is eecr, effv should contain at least one effect value (e.g., 0.5).
+For example, the EC50 values (10-6 mol/L) were 41.8, 238.0, 3.07, 23.4, 978.0, 32.8, 2200.0,
+ and 1530.0 for chemical A, B, C, D, E, F, G, and H, respectively. 
+ According to their ratio of EC50 values, the proportion of the eight components in the 
+ mixture would be 0.006484, 0.06973, 0.0006581, 0.0003494, 0.1726, 0.001497, 
+ 0.6774, and 0.07131. \cr
+if the mixTpe is udcr, the length of effv is the number of levels (runs). 
 the number of runs should be in accordance with the length of model based on the uniform design 
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -65,15 +73,15 @@ the number of runs should be in accordance with the length of model based on the
 }
 \examples{
 ## example 1
-# using CA to predict the mixtures designed by equal effect concentration ratio (eecr) at the
+# using CA to predict the toxicity of mixture designed by eecr at the
 # effect concentration of EC05 and EC50
-# the eecr mixture design is based on seven antibiotics(seven factors).
+# eecr mixture design is based on seven antibiotics(factors).
 model <- antibiotox$sgl$model
 param <- antibiotox$sgl$param
 caPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 
 ## example 2
-# using CA to predict the mixtures designed by uniform design concentration ratio (udcr)
+# using CA to predict the mixtures designed by udcr
 # the udcr mixture design is based on four heavy metals and four ionic liquids (eight factors).
 # five levels (EC05, EC10, EC20, EC30, and EC50 ) are allocated in the uniform table using the
 # pseudo-level technique (Liang et al., 2001)
@@ -83,7 +91,7 @@ effv <- c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.30, 0.30, 0.50, 0.50)
 caPred(model, param, mixType = "udcr", effv)
 
 ## example 3
-# using CA to predict the mixtures designed by arbitrary concentration ratio (acr)
+# using CA to predict the mixtures designed by acr
 # the udcr mixture design is based on five antibiotics (five factors).
 # the every component in the mixture shares exactly the same ratio (0.20) 
 model <- antibiotox$sgl$model[1 : 5]
@@ -98,4 +106,4 @@ caPred(model, param, mixType = "acr", effv)
 \keyword{ uniform design concentration ratio }
 \keyword{ arbitrary concentration ratio }
 \keyword{ uniform design table}
-\keyword{ mixture effects}
+\keyword{ mixture effect}

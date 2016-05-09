@@ -1,4 +1,4 @@
-curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lg[concentration, mol/L]", 
+curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "log[concentration, mol/L]", 
 							ylabel = "Inhibition [%]", sigLev = 0.05, noec = TRUE, algo = "default"){
 	# NLS curve fitting for monotonic and non-monotonic equations
 	# x is a vector 
@@ -240,12 +240,13 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lg
 	fitInfo <- summary(fit) # fitting information
 	
 	yhat <- predict(fit, x) # y prediction
+	res <- y - yhat
 	sst <- sum((y - mean(y))^2) # total sum of squares
-	sse <- sum((y - yhat)^2) # sum of squared errors
+	sse <- sum((res)^2) # sum of squared errors
 	r2 <- 1 - sse / sst # coefficient of determination
 	adjr2 <- 1 - sse * (n - 1) / (sst * (n - m)) # adjusted coefficient of determination
 	rmse <- sqrt(sse / (n - m)) # root-mean-square error
-	mae <- sum(abs(y - yhat)) / n # mean absolute error
+	mae <- sum(abs(res)) / n # mean absolute error
 	#Spiess A-N, Neumeyer N. 2010. An evaluation of R2 as an inadequate measure for nonlinear models in pharmacological and biochemical research: A Monte Carlo approach. BMC Pharmacol. 10: 11.
 	lnL <- 0.5 * (-n * (log(2 * pi) + 1 - log(n) + log(sse)))
 	aic <- 2 * m - 2 * lnL # Akaike information criterion 
@@ -346,8 +347,8 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lg
 	}
 	
 	if(Hormesis == FALSE){
-		list(fitInfo = fitInfo, p = paramHat, sta = sta, crcInfo = crcInfo, eci = ecx.ci, effvci = effv.ci, noecInfo = noecInfo)
+		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, eci = ecx.ci, effvci = effv.ci, noecInfo = noecInfo)
 	}else{
-		list(fitInfo = fitInfo, p = paramHat, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, eci = ecx.ci, noecInfo = noecInfo)
+		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, eci = ecx.ci, noecInfo = noecInfo)
 	}
 }

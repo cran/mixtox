@@ -1,17 +1,17 @@
 \name{nmECx}
 \alias{nmECx}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Effect Concentration Calculation for Non-monotonic Curves}
+\title{Effect Concentration Calculation for J-shaped Models}
 \description{
 Effect concentrations are calculated at particular effects based on the fitting coefficients 
-of 13 monotonic equations.
+of J-shaped Models.
 }
 \usage{nmECx(model, param, effv, minx)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{model}{character vector of equations:("Brain_Consens", "BCV", "Beckon", "Biphasic",
+  \item{model}{character vector of equations:("Brain_Consens", "BCV", "Biphasic",
                "Hill_six")}
-  \item{param}{numeric matrix of fitting coefficients with rownames (equation selected) and 
+  \item{param}{numeric matrix of fitting coefficients with rownames (models) and 
 		colnames (ALpha, Beta, Gamma, Delta, and Epsilon).
 		}
   \item{effv}{numeric vector with single or multiple effect values (miny ~ 1)}
@@ -26,7 +26,7 @@ example, \eqn{effv} should be 0.5 if we want to calculate a concentration causes
 \eqn{minx} should be calculated using curveFit
 }
 
-\value{ a numeric vector of effect concentration(s)}
+\value{ numeric vector of effect concentration}
 \references{
 Zhu X-W, Liu S-S, Qin L-T, Chen F, Liu H-L. 2013. Modeling non-monotonic dose-response 
 relationships: Model evaluation and hormetic quantities exploration. Ecotoxicology and 

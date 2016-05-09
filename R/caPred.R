@@ -1,4 +1,4 @@
-caPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
+caPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints){
 	## concentration addition prediction
 	##source('ECx.R')
 
@@ -13,8 +13,9 @@ caPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv){
 	
 	if (length(model) >= 2){
 		## at these effect points the effect concentrations will be predicted
-		effPoints <- c(.025, .03, .05, .10, .15, .20, .25, .30, .35, .40, .45, .47, .50, .52, .55, .60, .65, .70, .75, .80, .85, .90)
-		
+		if(missing(effPoints)){		
+			effPoints <- c(.025, .03, .05, .10, .15, .20, .25, .30, .35, .40, .45, .47, .50, .52, .55, .60, .65, .70, .75, .80, .85, .90)
+		}
 		if (mixType == 'eecr'){
 			## equal effect concentration ratio
 			ecx <- ECx(model, param, effv)

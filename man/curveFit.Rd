@@ -3,10 +3,10 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Curve Fitting}
 \description{
-Thirteen monotonic(sigmoidal) equations ("Hill", "Hill_two", "Hill_three", "Hill_four",
+Thirteen monotonic(sigmoidal) models ("Hill", "Hill_two", "Hill_three", "Hill_four",
 "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
-"BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and six
-non-monotonic(J-shaped) equations ("Brain_Consens", "BCV", "Beckon", "Biphasic", "Hill_six")
+"BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and four
+non-monotonic(J-shaped) models ("Brain_Consens", "BCV", "Biphasic", "Hill_six")
 are provided to fit concentration-response data. The statistics for goodness of fit
 is evaluated by the following statistics: coefficient of
 determination (\eqn{R^2}), adjusted coefficient of determination (\eqn{R_{adj}^2}),
@@ -15,20 +15,20 @@ bias-corrected Akaike information criterion(AICc), and Bayesian information crit
 }
 \usage{
 curveFit(x, expr, eq , param, effv, fig = TRUE, ylimit, 
-         xlabel = 'lg[concentration, mol/L]', ylabel = 'Inhibition [\%]', 
+         xlabel = 'log[concentration, mol/L]', ylabel = 'Inhibition [\%]', 
 		 sigLev = 0.05, noec = TRUE, algo = "default")
 
 }
 
 \arguments{
   \item{x}{a numeric vector of experimental concentrations}
-  \item{expr}{a numeric matrix with one or more columns. each column represents one experimental 
+  \item{expr}{a numeric matrix with one or more columns. each column represents one experiment 
 		repetition.}
-  \item{eq}{equations to be called: "Hill", "Hill_two", "Hill_three", "Hill_four",
+  \item{eq}{models for curve fitting: "Hill", "Hill_two", "Hill_three", "Hill_four",
             "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
-            "BCW", "BCL", "GL", "Brain_Consens", "BCV", "Beckon", "Biphasic", "Hill_six".}
+            "BCW", "BCL", "GL", "Brain_Consens", "BCV", "Biphasic", "Hill_six".}
   \item{param}{starting values for curve fitting.}
-  \item{effv}{numeric vector with single or multiple effect values.}
+  \item{effv}{numeric values [0, 1].}
   \item{fig}{a logical value (TRUE of FALSE). Whether to show the concentration-response curve.}
   \item{ylimit}{a two value vector defines the lower and upper limits of the figure.}
   \item{xlabel}{define x-axis label.}
@@ -45,14 +45,14 @@ curveFit(x, expr, eq , param, effv, fig = TRUE, ylimit,
 }
 \details{Curve fitting is dependent on the package 'nls2'
         (http://cran.r-project.org/web/packages/nls2/index.html).\cr
-		Monotonic(sigmoidal) equations are listed as follows:\cr
+		Monotonic(sigmoidal) models are listed as follows:\cr
 		Hill: \deqn{E = 1/\left( {1 + {{\left( {\alpha /c} \right)}^\beta }} \right)}
 		Hill_two: \deqn{E = \beta c/\left( {\alpha  + c} \right)}
 		Hill_three: \deqn{E = \gamma /\left( {1 + {{\left( {\alpha /c} \right)}^\beta }} \right)}
 		Hill_four: \deqn{E = \delta  + \left( {\gamma  - \delta } \right)/\left( {1 +
 							{{\left( {\alpha /c} \right)}^\beta }} \right)}
-		where \eqn{alpha} = EC50, \eqn{beta} = m(Hill coefficient), \eqn{gamma} = Top,
-		and \eqn{delta} = Bottom \cr
+		where \eqn{\alpha} = EC50, \eqn{\beta} = H (Hill coefficient), \eqn{\gamma} = Top,
+		and \eqn{\delta} = Bottom \cr
 
 		Weibull: \deqn{E = 1 - \exp ( - \exp (\alpha  + \beta \lg (c)))}
 		Weibull_three: 	\deqn{E = \gamma \left( {1 - \exp \left( { - \exp \left( {\alpha  +
@@ -65,58 +65,66 @@ curveFit(x, expr, eq , param, effv, fig = TRUE, ylimit,
 		Logit_four: \deqn{E = \delta  + \left( {\gamma  - \delta } \right)/\left( {1 + \exp \left
 		            ( {\left( { - \alpha } \right) - \beta \lg \left( c \right)} \right)} \right)}
 
-		where \eqn{alpha} is the location parameter and \eqn{beta} slope parameter.
-		\eqn{gamma} = Top, and \eqn{delta} = Bottom \cr
+		where \eqn{\alpha} is the location parameter and \eqn{\beta} slope parameter.
+		\eqn{\gamma} = Top, and \eqn{\delta} = Bottom \cr
 
 		BCW: \deqn{E = 1 - \exp \left( { - \exp \left( {\alpha  + \beta \left(
 				{\frac{{{c^\gamma } - 1}}{\gamma }} \right)} \right)} \right)}
 		BCL: \deqn{E = {(1 + \exp ( - \alpha  - \beta (({c^\gamma } - 1)/\gamma )))^{ - 1}}}
 		GL: \deqn{E = 1/{(1 + \exp ( - \alpha  - \beta \lg (c)))^\gamma }}
 
-		Non-monotonic(J-shaped) equations:\cr
+		Non-monotonic(J-shaped) models:\cr
 		Hill_six: \deqn{E = \left( {\gamma /{{\left( {1 + \alpha /c} \right)}^\beta }} \right)/
 			                   (gamma\_one/{\left( {1 + alpha\_one/c} \right)^{beta\_one}}}
 
 		Brain_Consens: \deqn{E = 1 - \left( {1 + \alpha c} \right)/\left( {1 + \exp \left(
 		                      {\beta \gamma } \right){c^\beta }} \right)}
-		where alpha is the initial rate of increase at low concentration, beta the way in which
-		response decreases with concentration, and gamma no simple interpretation.\cr
+		where \eqn{\alpha} is the initial rate of increase at low concentration, \eqn{\beta} 
+		the way in which 
+		response decreases with concentration, and \eqn{\gamma} no simple interpretation.\cr
 
 		BCV: \deqn{E = 1 - \alpha \left( {1 + \beta c} \right)/\left( {1 + \left( {1 + 2\beta
 					\gamma } \right){{\left( {c/\gamma } \right)}^\delta }} \right)}
-		where alpha is untreated control, beta the initial rate of increase at low concentration,
-		gamma the concentration cause 50\% inhibition, and delta no simple interpretation.\cr
+		where \eqn{\alpha} is untreated control, \eqn{\beta} the initial rate of 
+		increase at low concentration, \eqn{\gamma} the concentration cause 50\% inhibition, 
+		and \eqn{\delta} no simple interpretation.\cr
 
 		Cedergreen: \deqn{E = 1 - \left( {1 + \alpha \exp \left( { - 1/\left( {{c^\beta }}
 						\right)} \right)} \right)/\left( {1 + \exp \left( {\gamma \left({\ln
 						\left( c \right) - \ln \left( \delta  \right)} \right)} \right)} \right)}
-		where alpha the initial rate of increase at low concentration, beta the rat of the
-		hormetic effect manifests itself, gamma the steepness of the curve after the
-		maximum hormetic effect, and delta the lower bound on the EC50 level.\cr
+		where \eqn{\alpha} the initial rate of increase at low concentration, \eqn{\beta} 
+		the rate of	hormetic effect manifests itself, 
+		\eqn{\gamma} the steepness of the curve after 
+		maximum hormetic effect, and \eqn{\delta} the lower bound on the EC50 level.\cr
 
 		Beckon: \deqn{E = \left( {\alpha  + \left( {1 - \alpha } \right)/\left( {1 + {{\left(
 						{\beta /c} \right)}^\gamma }} \right)} \right)/\left( {1 + {{\left(
 						{c/\delta } \right)}^\varepsilon }} \right)}
-		where alpha is the minimum effect that would be approached by the downslope in the absence
-		of the upslope, beta the concentration at the midpoint of the falling slope, gamma the
-		steepness of the rising(positive) slope, delta the concentration at the midpoint of the
-		rising slope, and epsilon the steepness of the falling(negative) slope.\cr
+		where \eqn{\alpha} is the minimum effect that would be approached by 
+		the downslope in the absence 
+		of the upslope, \eqn{\beta} the concentration at the midpoint of the falling slope, 
+		\eqn{\gamma} the steepness of the rising(positive) slope, \eqn{\delta} the concentration 
+		at the midpoint of the rising slope, and \eqn{\epsilon} the steepness of the 
+		falling(negative) slope.\cr
 
 		Biphasic: \deqn{E = \alpha  - \alpha /\left( {1 + {{10}^{\left( {\left( {c - \beta }
 						\right)\gamma } \right)}}} \right) + \left( {1 - \alpha } \right)/\left
 						( {1 + {{10}^{\left( {\left( {\delta  - c} \right)\varepsilon } \right)}}}
 						\right)}
-		where alpha is the minim effect that would be approached by the downslope in the absence
-		of the upslope, beta the concentration at the midpoint of the falling slope, gamma the
-		steepness of the rising(positive) slope, delta the concentration at the midpoint of the
-		rising slope, and epsilon the steepness of the falling(negative) slope.\cr
+		where \eqn{\alpha} is the minimum effect that would be approached by the 
+		downslope in the absence 
+		of the upslope, \eqn{\beta} the concentration at the midpoint of the falling slope, 
+		\eqn{\gamma} the steepness of the rising(positive) slope, \eqn{\delta} the concentration 
+		at the midpoint of the
+		rising slope, and \eqn{\epsilon} the steepness of the falling(negative) slope.\cr
 		In all, \eqn{E} is effect and \eqn{c} is the concentration.
 	}
 \value{
 \item{fitInfo }{curve fitting information including the formula used to fit the concentration-
 		response data. The fitted coefficients with standard errors, t test value, and p value.
 		Residual standard error and the degree of freedom are also provided.}
-\item{p }{fitted coefficients of the formula}
+\item{p }{fitted coefficients}
+\item{res }{residual}
 \item{sta }{Statistics about the goodness of fit (\eqn{R^2}, \eqn{R_{adj}^2}, MAE, RMSE, AIC,
 			AICc, and BIC)}
 \item{crcInfo }{a numeric matrix with the experimental concentration (x), fitted response (yhat),
@@ -125,9 +133,9 @@ curveFit(x, expr, eq , param, effv, fig = TRUE, ylimit,
 		(FCI.low and FCI.up)
 		}
 \item{eci }{confidence intervals of effect concentration at the response of effv}
-\item{effvci }{confidence intervals of the response effv for monotonic equations}
-\item{minx }{concentration to induce the largest stimulation for non-monotonic equations}
-\item{miny }{the largest stimulation, only for non-monotonic equations}
+\item{effvci }{confidence intervals of the response effv for sigmoidal models}
+\item{minx }{concentration to induce the largest stimulation for J-shaped models}
+\item{miny }{the largest stimulation, only for J-shaped models}
 \item{noecInfo$mat }{a matrix of experimental concentrations, Student's t-statistic,
 		F distribution at the sigLev,and sign (-1 or 1)}
 \item{noecInfo$no }{non-observed effect concentration (NOEC)}
@@ -155,10 +163,10 @@ Syst. 87, 147-154.
 \author{xiangwei zhu}
 \note{
 	Note that the starting values for parameters are not easy to pick in curve fitting 
-	Generally, two-parameter 
-	equations are more robust to bad 
-	starting values than three-parameter equations. One rule of thumb is to choose equations with
+	Generally, two-parameter models are more robust to bad 
+	starting values than three-parameter models. One rule of thumb is to choose models with
 	less parameters at the same level of accuracy.
+	tuneFit is recommended if users get lost in finding appropriate starting values.
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
@@ -202,7 +210,7 @@ curveFit(x, expr, eq = 'Logit', param = c(26, 4), effv = c(0.05, 0.5))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ curve fitting }
+\keyword{curve fitting }
 \keyword{concentration-response curve}
 \keyword{goodness of fit}
 \keyword{confidence intervals}

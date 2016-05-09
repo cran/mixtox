@@ -1,11 +1,14 @@
 \name{ecaPred}
 \alias{ecaPred}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Mixture Effect Predicted by CA at Particular ECx of a Mixture}
+\title{Mixture Effect Predicted by CA at Particular Concentration of a Mixture}
 \description{According to the fitted concentration-response information of mixtures. The 
 			concentration (e.g., ECx) that causes certain effect in the mixture will be
 			calculated. ecaPred will predict how much effect will be caused at ECx according
-			to concentration addition.}
+			to concentration addition.
+			The individual concentration-responses should be  
+			fitted only based on the following six models: Hill, 
+			Weibull, Logit, BCW, BCL, and GL.}
 \usage{ecaPred(effv, sgl, mix, pctMix)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -54,4 +57,4 @@ ecaPred(effv = c(0.05, 0.1, 0.20, 0.5), sgl, mix, pct)
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{concentration addition}
-\keyword{mixture effects}
+\keyword{mixture effect}

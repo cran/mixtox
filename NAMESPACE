@@ -1,6 +1,6 @@
 exportPattern(".")
-importFrom("graphics", "lines", "par", "plot")
+importFrom("graphics", "legend", "lines", "par", "plot")
 importFrom("stats", "nls", "nls.control", "predict", "qf", "qt",
-             "spline", "uniroot", "optimize")
-importFrom("utils", "combn")
+             "spline", "uniroot", "optimize", "qqnorm", "qqline")
+importFrom("utils", "combn", "write.table")
 import(nls2)

@@ -1,30 +1,30 @@
-\name{mixtox-package}
-\alias{mixtox-package}
+\name{mixtox}
 \alias{mixtox}
 \docType{package}
 \title{
 Curve Fitting and Mixture Toxicity Assessment
 }
 \description{Curve Fitting for monotonic(sigmoidal) & non-monotonic(J-shaped) 
-concentration-response data. Toxicity prediction of chemical mixtures using reference 
-models such as 'concentration addition' and 'independent action' (Backhaus, T., Faust, 
-M., Environmental Science and Technology. 2012, 46, 2564-2573. doi:10.1021/es2034125).
+concentration-response data. Prediction of mixture toxicity based on reference 
+models such as 'concentration addition', 'independent action', and generalized 
+concentration addition.
 }
 \details{
 \tabular{ll}{
 Package: \tab mixtox\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2015-11-30\cr
+Version: \tab 1.3\cr
+Date: \tab 2016-05-08\cr
 License: \tab GPL-2\cr
 }
-(1) Curve fitting of concentration-response data using 13 monotonic(sigmoidal) and 6 
-non-monotonic(J-shaped) equations, statistics for goodness of fit , and calculation for 
-function-based and observation-based confidence intervals . \cr
+(1) Curve fitting of concentration-responses based on 13 monotonic(sigmoidal) and 4 
+non-monotonic(J-shaped) models, goodness of fit, and confidence intervals 
+calculation. \cr
 (2) Experimental design for mixture toxicity.  
-	acr: arbitrary concentration ratio; eecr: equal effect concentration ratio; 
+	acr: arbitrary concentration ratio; 
+	eecr: equal effect concentration ratio;
 	udcr: uniform design concentration ratio. \cr
-(3) Mixture toxicity prediction using reference models such as concentration addition (CA), 
+(3) Mixture toxicity prediction based on reference models such as concentration addition (CA), 
 	independent action (IA), and generalized concentration addition (GCA).
 }
 \author{

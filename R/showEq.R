@@ -1,10 +1,11 @@
 showEq <- function(eq){
 	# default Non-linear least square fitting algorithm is the Gauss-Newton algorithm
 	print('######################## function selection ###########################')
-	print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Hill_six", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
-			"Logit_four", "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)", "Brain_Consens", "BCV",
-			"Beckon", "Biphasic"))
+	#print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Hill_six", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
+	#		"Logit_four", "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)", "Brain_Consens", "BCV",
+	#		"Biphasic"))
 	#eq <- readline('input equation name: ')
+	if(missing(eq)) eq <- 'sigmoid'
 	fun <- switch(eq,
 		# Howard GJ, Webster TF. 2009. Generalized concentration addition: A method for examining mixtures containing partial agonists. J. Theor. Biol. 259:469-477
 		Hill = print("Hill: y ~ 1 / (1 + (Alpha / x)^Beta)"),
@@ -30,8 +31,12 @@ showEq <- function(eq){
 		# Cedergreen, N., Ritz, C., Streibig, J.C., 2005. Improved empirical models describing hormesis. Environ. Toxicol. Chem. 24, 3166-3172
 		Cegergreen = print("Cedergreen: y ~ 1 - (1 + Alpha * exp(-1 / (x^Beta))) / (1 + exp(Gamma * (log(x) - log(Delta))))"),
 		# Beckon, W. et.al. 2008. A general approach to modeling biphasic relationships. Environ. Sci. Technol. 42, 1308~1314.
-		Beckon = print("Beckon: y ~ (Alpha + (1 - Alpha / (1 + (Beta / x)^Gamma))) / (1 + (x / Delta)^Epsilon)"),
+		#Beckon = print("Beckon: y ~ (Alpha + (1 - Alpha / (1 + (Beta / x)^Gamma))) / (1 + (x / Delta)^Epsilon)"),
 		# Zhu X-W, et.al . 2013. Modeling non-monotonic dose-response relationships: Model evaluation and hormetic quantities exploration. Ecotoxicol. Environ. Saf. 89:130-136;
-		Biphasic = print("Biphasic: y ~ Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))")
+		Biphasic = print("Biphasic: y ~ Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))"),
+		
+		sigmoid = print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
+			"Logit_four", "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)")),
+		hormesis = 	print(c("Brain_Consens", "BCV", "Biphasic", "Hill_six"))
 	)
 }

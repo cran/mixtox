@@ -1,11 +1,14 @@
 \name{eiaPred}
 \alias{eiaPred}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Mixture Effect Predicted by IA at Particular ECx of a Mixture}
+\title{Mixture Effect Predicted by IA at Particular Concentration of a Mixture}
 \description{According to the fitted concentration-response information of mixtures. The
 			concentration (e.g., ECx) that causes certain effect in the mixture will 
 			be calculated. eiaPred will predict how much effect will be caused at 
-			ECx according to independent action.}
+			those concentrations according to independent action.
+			The individual concentration-responses should be  
+			fitted only based on the following six models: Hill, 
+			Weibull, Logit, BCW, BCL, and GL.}
 \usage{eiaPred(effv, sgl, mix, pctMix)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -48,8 +51,8 @@
 # each mixture contains eight components. Totally, there are 10 mixtures designed by the udcr.
 
 sgl <- cytotox$sgl
-mix <- cytotox$mix
-pct <- cytotox$pct
+mix <- cytotox$udcr.mix
+pct <- cytotox$udcr.pct
 eiaPred(effv = c(0.1, 0.5), sgl, mix, pct)
 
 ## example 2
@@ -74,5 +77,5 @@ eiaPred(effv = c(0.05, 0.10, 0.20, 0.5), sgl, mix, pct)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ independent action }
-\keyword{mixture effects}
+\keyword{independent action }
+\keyword{mixture effect}

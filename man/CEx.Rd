@@ -17,7 +17,9 @@
 \details{Responses will be calculated with provided equations (model), associated 
 fitting parameters (param), and concentrations.
 }
-\value{ a numeric vector of effect(s)}
+\value{ 
+\item{effv}{a numeric vector of effect(s)}
+}
 \references{
 Zhu X-W, et.al. 2013. Modeling non-monotonic dose-response relationships: Model evaluation 
 and hormetic quantities exploration. Ecotoxicol. Environ. Saf. 89:130-136.\cr
@@ -27,13 +29,8 @@ Scholze, M. et al. 2001. A General Best-Fit Method for Concentration-Response Cu
  
 }
 \author{xiangwei zhu}
-\note{Ninteen equations in total
-}
 %% ~Make other sections like Warning with \section{Warning }{....} ~
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-\code{\link{ECx}}
-}
+
 \examples{
 ## example 1
 # calculate the responses of hormesis curves at the concentration of 0.1 and 0.02 mol/L

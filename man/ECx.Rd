@@ -1,10 +1,10 @@
 \name{ECx}
 \alias{ECx}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Effect Concentration Calculation for Monotonic Curves}
+\title{Effect Concentration Calculation for Sigmoidal Models}
 \description{
 Effect concentrations are calculated at particular effects based on the fitting coefficients 
-of 13 monotonic equations.
+of 13 Sigmoidal models.
 }
 \usage{ECx(model, param, effv)}
 %- maybe also 'usage' for other objects documented here.
@@ -33,19 +33,17 @@ inverse GL: \deqn{c = {10^{(( - \ln ({{(1/E)}^{1/\gamma }} - 1) - \alpha )/\beta
 where \eqn{E} is effect and \eqn{c} is the concentration.
 }
 
-\value{ a numeric vector of effect concentration(s)}
+\value{ 
+\item{ecx}{a numeric vector of effect concentration(s)}
+}
 \references{
 Hill equation (biochemistry) http://en.wikipedia.org/wiki/Hill_equation_(biochemistry)\cr
 Reference to {curveFit}
 }
 \author{xiangwei zhu}
 \note{For equations with less parameters, the default can be set as zero or any other 
- numeric values. 
-	}
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-\code{\link{CEx}}
-}
+ numeric values. }
+
 \examples{
 ## example 1
 # calculate EC5 and EC50 of seven antibiotics on the photobacteria

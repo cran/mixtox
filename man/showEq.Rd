@@ -12,8 +12,8 @@
 \details{
 Thirteen monotonic(sigmoidal) equations ("Hill", "Hill_two", "Hill_three", "Hill_four", 
 "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four", 
-"BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and six 
-non-monotonic(J-shaped) equations ("Brain_Consens", "BCV", "Beckon", "Biphasic", "Hill_six") 
+"BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and four
+non-monotonic(J-shaped) equations ("Brain_Consens", "BCV", "Biphasic", "Hill_six") 
 are provided to fit concentration-response data. 
 
 }
@@ -45,8 +45,12 @@ Syst. 87, 147-154.
 }
 \examples{
 # example 1
-## show Weibull equations
+## show Weibull model
 showEq('Weibull')
+
+# example 2
+## show the name of all sigmoidal models
+showEq('sigmoid')
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
