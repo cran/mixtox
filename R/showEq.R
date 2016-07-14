@@ -1,7 +1,7 @@
 showEq <- function(eq){
 	# default Non-linear least square fitting algorithm is the Gauss-Newton algorithm
 	print('######################## function selection ###########################')
-	#print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Hill_six", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
+	#print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Hill_five", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
 	#		"Logit_four", "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)", "Brain_Consens", "BCV",
 	#		"Biphasic"))
 	#eq <- readline('input equation name: ')
@@ -14,7 +14,7 @@ showEq <- function(eq){
 		Hill_two = print("Hill_two: y ~ Beta * x / (Alpha + x)"),
 		Hill_three = print("Hill_three: y ~ Gamma /(1 + (Alpha / x)^Beta)"),
 		Hill_four = print("Hill_four: y ~ Delta + (Gamma - Delta) / (1 + (Alpha / x)^Beta)"),
-		Hill_six = print("Hill_six: y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one))"),
+		Hill_five = print("Hill_five: y ~ 1 - (1 + (Gamma - 1) / (1 + (Alpha / x)^Beta)) * (1 - 1 / (1 + (Delta / x)^Epsilon))"),
 		Weibull = print("Weibull: y ~ 1 - exp(-exp(Alpha + Beta * log10(x)))"),
 		Weibull_three = print("Weibull_three: y ~ Gamma * (1 - exp(-exp(Alpha + Beta * log10(x))))"),
 		Weibull_four = print("Weibull_four: y ~ Gamma + (Delta - Gamma) * exp(-exp(Alpha + Beta * log10(x)))"),
@@ -37,6 +37,6 @@ showEq <- function(eq){
 		
 		sigmoid = print(c("Hill", "Hill_two", "Hill_three", "Hill_four", "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three",
 			"Logit_four", "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)")),
-		hormesis = 	print(c("Brain_Consens", "BCV", "Biphasic", "Hill_six"))
+		hormesis = 	print(c("Brain_Consens", "BCV", "Biphasic", "Hill_five"))
 	)
 }

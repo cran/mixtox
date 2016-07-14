@@ -13,7 +13,7 @@
 Thirteen monotonic(sigmoidal) equations ("Hill", "Hill_two", "Hill_three", "Hill_four", 
 "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four", 
 "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and four
-non-monotonic(J-shaped) equations ("Brain_Consens", "BCV", "Biphasic", "Hill_six") 
+non-monotonic(J-shaped) equations ("Brain_Consens", "BCV", "Biphasic", "Hill_five") 
 are provided to fit concentration-response data. 
 
 }

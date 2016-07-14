@@ -34,7 +34,8 @@ nmECx <- function(model, param, effv, minx){
 		if(model[i] == 'Cedergreen') f <- paste('1 - (1 +', param[i, 1], '* exp(-1 / (xx^',param[i, 2],'))) / (1 + exp(',param[i, 3], '* (log(xx) - log(', param[i, 4],')))', sep = '')
 		if(model[i] == 'Beckon') f <- paste('(',param[i, 1], '+ (1 - (',param[i, 1],') / (1 + (',param[i, 2], '/ xx)^',param[i, 3],'))) / (1 + (xx /', param[i, 4],')^',param[i, 5],')', sep = '')
 		if(model[i] == 'Biphasic') f <- paste(param[i, 1], '-', param[i, 1], '/ (1 + 10^((xx -', param[i, 2],') *', param[i, 3],')) + (1 -', param[i, 1],') / (1 + 10^((',param[i, 4], '- xx) *', param[i, 5],'))', sep = '')
-		if(model[i] == 'Hill_six') f <- paste('(', param[i, 3], '/ (1 + (', param[i, 1], '/ xx)^', param[i, 2], ')) * (', param[i, 6], '/ (1 + (', param[i, 4], '/ xx)^', param[i, 5], '))')
+		if(model[i] == 'Hill_five') f <- paste('1 - (1 + (', param[, 3], '- 1) / (1 + (', param[i, 1], '/xx)^', param[i, 2], ')) * (1 - 1 / (1 + (', param[i, 4], '/xx)^', param[i, 5], '))', sep = '')
+		
 		for(j in seq(len_pos + len_neg)){
 			# the right side of minx
 			fun_body <- paste(f, '-', effv[j], sep = '')

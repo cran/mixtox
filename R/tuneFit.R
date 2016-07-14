@@ -1,14 +1,14 @@
-tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000, sav = FALSE){
+tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000, bar = 1000, sav = FALSE){
 
 # File with the first line as header. assay name in the first column, casrn the second, and compounds' name the third column.
 # the following columns should be conc an rspn in a same number.
-	#library(nls2)
+	#library(minpack.lm)
 	#source('fitKenel.R')
 	#source('ECx.R')
 	#source('nmECx.R')
 	#load('staval.rda')
 	##########################################
-	fitKenel <- function(x, expr, eq , param, effv, algo = "default"){
+	fitKenel <- function(x, expr, eq , param, effv, rsq, algo = "default"){
 		# NLS curve fitting for monotonic and non-monotonic equations
 		# x is a vector 
 		# expr is a vector or matrix
@@ -22,7 +22,7 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 			Hill_two = 'y ~ Beta * x / (Alpha + x)',
 			Hill_three = 'y ~ Gamma /(1 + (Alpha / x)^Beta)',
 			Hill_four = 'y ~ Delta + (Gamma - Delta) / (1 + (Alpha / x)^Beta)',
-			Hill_six = 'y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one))',
+			Hill_five = 'y ~ 1 - (1 + (Gamma - 1) / (1 + (Alpha / x)^Beta)) * (1 - 1 / (1 + (Delta / x)^Epsilon))',
 			# Hill_nine = 'y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one)) * (Gamma_two / (1 + (Alpha_two / x)^Beta_two))',
 			Weibull = 'y ~ 1 - exp(-exp(Alpha + Beta * log10(x)))',
 			Weibull_three = 'y ~ Gamma * (1 - exp(-exp(Alpha + Beta * log10(x))))',
@@ -45,8 +45,8 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 			Biphasic = 'y ~ Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))'
 		)
 		
-		## checking nls2 package, use the nls2 or built-in nls for curve fitting
-		#if(require(nls2)){
+		## checking minpack.lm package, use the nlsLM or built-in nls for curve fitting
+		#if(require(minpack.lm)){
 		if (missing(x) || missing(expr) || missing(eq) || missing(param)) stop('argument missing')
 		n <- length(x) # the number of concentrations
 		mode(param) <- "numeric"
@@ -63,30 +63,43 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 			if(n != size[1]) stop("x and dim(y)[1] should be in the same length")
 		}
 		# nonmonotonic or monotonic
-		if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Biphasic' || eq == 'Hill_six') Hormesis <- TRUE else Hormesis <- FALSE
+		if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Biphasic' || eq == 'Hill_five') Hormesis <- TRUE else Hormesis <- FALSE
 
 		dframe <- data.frame(x, y)
 		fit <- tryCatch({
-			if(requireNamespace("nls2", quietly = TRUE)){
+			if(requireNamespace("minpack.lm", quietly = TRUE)){
 				if(eq == "Weibull" || eq == "Logit" || eq == "Hill" || eq == "Hill_two"){
-						fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.control(maxiter = 1000), algorithm = algo)
+						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.lm.control(maxiter = 1000))
 				
 				}else if(eq == "BCW" || eq == "BCL" || eq == "GL" || eq == 'Brain_Consens' || eq == "Hill_three" || eq == 'Weibull_three' || eq == 'Logit_three'){
-						fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control(maxiter = 1000), algorithm = algo)
+						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.lm.control(maxiter = 1000))
 				
 				}else if(eq == 'BCV'|| eq == 'Cedergreen' || eq == "Hill_four" || eq == 'Weibull_four' || eq == 'Logit_four'){
-						#fit <- nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.control(maxiter = 1000), algorithm = "grid-search")
-						fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.control(maxiter = 1000), algorithm = algo)
-				}else if(eq == 'Beckon' || eq == 'Biphasic'){
-						fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.control(maxiter = 1000), algorithm = algo)
-						#fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
-				}else if(eq == 'Hill_six'){
-						fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Alpha_one = param[4], Beta_one = param[5], Gamma_one = param[6]), control = nls.control(maxiter = 1000), algorithm = algo)
-				} else{
+						#fit <-minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+				}else if(eq == 'Beckon' || eq == 'Biphasic' || eq =='Hill_five'){
+						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.lm.control(maxiter = 1000))
+						#fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
+				}else{
 					stop('input right equaiton name')
 				}
 			} else{
-				stop('input the right equation name')
+				warning('please install package minpack.lm')
+				if(eq == "Weibull" || eq == "Logit" || eq == "Hill" || eq == "Hill_two"){
+						fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.lm.control(maxiter = 1000))
+				
+				}else if(eq == "BCW" || eq == "BCL" || eq == "GL" || eq == 'Brain_Consens' || eq == "Hill_three" || eq == 'Weibull_three' || eq == 'Logit_three'){
+						fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.lm.control(maxiter = 1000))
+				
+				}else if(eq == 'BCV'|| eq == 'Cedergreen' || eq == "Hill_four" || eq == 'Weibull_four' || eq == 'Logit_four'){
+						#fit <-nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000), algorithm = "grid-search")
+						fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+				}else if(eq == 'Beckon' || eq == 'Biphasic' || eq =='Hill_five'){
+						fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.lm.control(maxiter = 1000))
+						#fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
+				}else{
+					stop('input right equaiton name')
+				}
 			}		
 					
 			fitInfo <- summary(fit) # fitting information	
@@ -104,22 +117,20 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 			bic <- m * log(n) - 2 * lnL # Bayesian information criterion
 			sta <- t(c(r2, adjr2, mae, rmse, aic, aicc, bic))
 			colnames(sta) <- c('r2', 'adjr2', 'MAE', 'RMSE', 'AIC', 'AICc', 'BIC')
-			paramHat <- t(as.matrix(summary(fit)$parameters[, 1]))	
+			paramHat <- coef(fit)
 			
 			# compute highest stimulation (minimum effect) of the J-shaped curve and associated concentration. 
 			# Brain_Consens, BCV, Cedergreen, Beckon, Biphasic
 			if(Hormesis == TRUE){
 				if(eq == 'Brain_Consens') Alpha = paramHat[1]; Beta = paramHat[2]; Gamma = paramHat[3]
 				if(eq == 'BCV' || eq == 'Cedergreen') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]
-				if(eq == 'Beckon' || eq == 'Biphasic') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]; Epsilon <- paramHat[5]
-				if(eq == 'Hill_six') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Alpha_one <- paramHat[4]; Beta_one <- paramHat[5]; Gamma_one <- paramHat[6]
-		
+				if(eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]; Epsilon <- paramHat[5]
 				if (eq == 'Brain_Consens') f <- function(x) 1 - (1 + Alpha * x) / (1 + exp(Beta * Gamma) * x^Beta)
 				if(eq == 'BCV') f <- function(x) 1 - Alpha * (1 + Beta * x) / (1 + (1 + 2 * Beta * Gamma) * (x / Gamma)^Delta)
 				if(eq == 'Cedergreen') f <- function(x) 1 - (1 + Alpha * exp(-1 / (x^Beta))) / (1 + exp(Gamma * (log(x) - log(Delta))))
 				if(eq == 'Beckon') f <- function(x) (Alpha + (1 - (Alpha) / (1 + (Beta / x)^Gamma))) / (1 + (x / Delta)^Epsilon)
 				if(eq == 'Biphasic') f <- function(x) Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))
-				if(eq == 'Hill_six') f <- function(x) (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one))
+				if(eq == 'Hill_five') f <- function(x) 1 - (1 + (Gamma - 1) / (1 + (Alpha / x)^Beta)) * (1 - 1 / (1 + (Delta / x)^Epsilon))
 		
 				# intervals for finding the minimum
 				intv <- c(x[2], x[length(x) - 1])	
@@ -150,7 +161,16 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 				ecx <- nmECx(eq, paramHat, effv[1], minx)
 			}
 			
-			message('done...')
+			if(missing(rsq)) rsq <- 0.90
+			
+			if(r2 > rsq){
+				message('done...') 
+			}else{
+				paramHat[] <- n.a.
+				sta[] <- n.a.
+				ecx <- n.a.
+			}
+			
 			if(Hormesis == FALSE){
 				list(p = paramHat, sta = sta, ecx = ecx)
 			}else{
@@ -193,15 +213,15 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 		Brain_Consens = staval$Brain_Consens,
 		BCV = staval$BCV,
 		Biphasic = staval$Biphasic,
-		Hill_six = staval$Hill_six
+		Hill_five = staval$Hill_five
 	)
-		
+	
 	if (nrow(param) > highBar) param <- param[sample(nrow(param), bar), ]
 	m <- ncol(param)
 	n <- nrow(param)
 	#n <- 1
 	curve_num <- nrow(conc)
-	if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_six') Hormesis <- TRUE else Hormesis <- FALSE
+	if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five') Hormesis <- TRUE else Hormesis <- FALSE
 
 	for(i in seq(curve_num)){
 		conc_i <- as.vector(conc[i, ])
@@ -209,7 +229,7 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, highBar = 5000, bar = 1000
 		rspn_i <- as.vector(rspn[i, ])
 		
 		for(j in seq(n)){
-			fit <- fitKenel(conc_i, rspn_i, eq = eq , param = param[j, ],  effv = effv, algo = "default")
+			fit <- fitKenel(conc_i, rspn_i, eq = eq , param = param[j, ],  effv = effv, rsq = rsq, algo = "default")
 			if(fit$p[1] != 1000001)	break
 		}
 		if(Hormesis == TRUE){

@@ -14,7 +14,8 @@
 \details{
 Dunnett's test (Dunnett, 1964) is performed by computing a Student's t-statistic for 
 each experimental, or treatment, group where the statistic compares the treatment 
-group to a single control group. Since each comparison has the same control in common, 
+group to control groups. For quantal concentration response data with lower limit at 0 and upper 
+limit at 1, the control groups would be 0. Since each comparison has the same control in common, 
 the procedure incorporates the dependencies between these comparisons. In particular, 
 the t-statistics are all derived from the same estimate of the error variance 
 which is obtained by pooling the sums of squares for error across all 
@@ -26,8 +27,8 @@ t-statistics (if a one-tailed test is required).
 \value{
 \item{mat }{a matrix of experimental concentrations, Student's t-statistic, \eqn{F} distribution 
 			at the sigLev, and sign (-1 or 1)}
-\item{no }{NOEC}
-\item{lo }{LOEC}
+\item{no }{non-observed effect concentration (NOEC)}
+\item{lo }{least-observed effect concentration (LOEC)}
 }
 \references{
 Dunnett, C.W., 1964. New tables for multiple comparisons with a control. Biometrics 30, 482-491.
@@ -39,9 +40,6 @@ At least three repetitions are required to calculate the NOEC and LOEC
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-\code{\link{curveFit}}
-}
 \examples{
 ## example 1
 # calcualte the NOEC and LOEC of heavy metal Ni(2+) on the MCF-7 cells at the default significance 

@@ -1,6 +1,18 @@
 NOEC <- function(x, expr, sigLev = 0.05){
 	# NOEC and LOEC calculation using Dunnett's test
 	## Dunnett, C.W., 1964. New tables for multiple comparisons with controls. Biometrics 30, 482-491
+	## non-observed effect concentration
+	## least observed effect concentration
+	## at least 3 repetition
+	if (is.vector(expr)){
+		stop("x and y should be of the same length")
+		
+	}else if (is.matrix(expr)){
+		size <- dim(expr)
+		nrep <- size[2]
+		if(nrep < 3) stop("at least three repetition")
+	}
+	
 	n <- nrow(expr)
 	m <- ncol(expr)
 	C <-  sum(expr)^2 / ((n + 1) * m) 

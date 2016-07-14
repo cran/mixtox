@@ -2,7 +2,7 @@
 \alias{qq4res}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Residual Normal QQ Plot }
-\description{Produces a side-by-side QQ plot of the residuals against standard normal quantiles.
+\description{Producing a side-by-side QQ plot of the residuals against standard normal quantiles.
 }
 \usage{qq4res(res, main = '', xlabel = 'Theoretical Quantiles', 
 			ylabel = 'Residuals', lgd = NULL)}
@@ -11,7 +11,7 @@
   \item{res}{residuals.}
   \item{main}{title }
   \item{xlabel, ylabel}{plot labels.}
-  \item{lgd}{legend.}
+  \item{lgd}{legend of the plot}
 }
 \details{The empirical quantiles are plotted against the quantiles of a standard normal 
 		distribution. If the residuals are from a normal distribution with mean 0, the points 

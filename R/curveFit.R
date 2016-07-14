@@ -1,9 +1,8 @@
-curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "log[concentration, mol/L]", 
-							ylabel = "Inhibition [%]", sigLev = 0.05, noec = TRUE, algo = "default"){
+curveFit <- function(x, expr, eq, param, effv, sigLev = 0.05){
 	# NLS curve fitting for monotonic and non-monotonic equations
 	# x is a vector 
 	# expr is a vector or matrix
-	# for non-monotonic curve fitting, Brain_Consens, BCV, and Biphasic are highly recommended.
+	# for non-monotonic curve fitting, Brain_Consens, BCV, Hill_five, and Biphasic are highly recommended.
 	## Jacobian matrix calculation
 	jacobian <- function(eq, x, paraHat){
 		n <- length(x)
@@ -22,9 +21,12 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 			Hill_three = c('-Gamma / (1 + (Alpha / x)^Beta)^2 * (Alpha / x)^Beta * Beta / Alpha', '-Gamma / (1 + (Alpha / x)^Beta)^2 * (Alpha / x)^Beta * log(Alpha / x)', '1 / (1 + (Alpha / x)^Beta)'),
 			Hill_four = c('-(Gamma - Delta) / (1 + (Alpha / x)^Beta)^2 * (Alpha / x)^Beta * Beta / Alpha', '-(Gamma - Delta) / (1 + (Alpha / x)^Beta)^2 * (Alpha / x)^Beta * log(Alpha / x)', 
 							'1 /(1 + (Alpha / x)^Beta)', '1 - 1 / (1 + (Alpha / x)^Beta)'),
-			Hill_six = c('-Gamma / (1 + (Alpha / x)^Beta)^2 * Gamma_one / (1 + (Alpha_one / x)^Beta_one) * (Alpha / x)^Beta * Beta / Alpha', '-Gamma / (1 + (Alpha / x)^Beta)^2 * Gamma_one / (1 + (Alpha_one / x)^Beta_one) * (Alpha / x)^Beta * log(Alpha / x)',
-							'1 / (1 + (Alpha / x)^Beta) * Gamma_one / (1 + (Alpha_one / x)^Beta_one)', '-Gamma / (1 + (Alpha / x)^Beta) * Gamma_one / (1 + (Alpha_one / x)^Beta_one)^2 * (Alpha_one / x)^Beta_one * Beta_one / Alpha_one',
-							'-Gamma / (1 + (Alpha / x)^Beta) * Gamma_one / (1 + (Alpha_one / x)^Beta_one)^2 * (Alpha_one / x)^Beta_one * log(Alpha_one / x)', 'Gamma / (1 + (Alpha / x)^Beta) / (1 + (Alpha_one / x)^Beta_one)'),
+			# Delta for Alpha_one and Epsilon for Beta_one
+			Hill_five = c('(Gamma-1)/(1+(Alpha/x)^Beta)^2*(Alpha/x)^Beta*Beta/Alpha*(1-1/(1+(Delta/x)^Epsilon))', '(Gamma-1)/(1+(Alpha/x)^Beta)^2*(Alpha/x)^Beta*log(Alpha/x)*(1-1/(1+(Delta/x)^Epsilon))',
+							'-1/(1+(Alpha/x)^Beta)*(1-1/(1+(Delta/x)^Epsilon))', '-(1+(Gamma-1)/(1+(Alpha/x)^Beta))/(1+(Delta/x)^Epsilon)^2*(Delta/x)^Epsilon*Epsilon/Delta',
+							'-(1+(Gamma-1)/(1+(Alpha/x)^Beta))/(1+(Delta/x)^Epsilon)^2*(Delta/x)^Epsilon*log(Delta/x)'),
+			
+			
 			Weibull = c('exp(Alpha + Beta * log(x) / log(10)) * exp(-exp(Alpha + Beta * log(x) / log(10)))', 
 						'log(x) / log(10) * exp(Alpha + Beta * log(x) / log(10)) * exp(-exp(Alpha + Beta * log(x) / log(10)))'),
 			
@@ -98,7 +100,7 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 		fci.low[which(fci.low < 0)] = 0
 		
 		ec.CI <- cbind(oci.low, oci.up, fci.low, fci.up)
-		colnames(ec.CI) <- c('OCI.low', 'OCI.up', 'FCI.low', 'FCI.up')
+		colnames(ec.CI) <- c('PI.low', 'PI.up', 'CI.low', 'CI.up')
 		return(ec.CI)
 	}
 	
@@ -115,39 +117,12 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 		efci.low[which(efci.low < 0)] = 0
 		
 		effv.CI <- cbind(eoci.low, eoci.up, efci.low, efci.up)
-		colnames(effv.CI) <- c('eOCI.low', 'eOCI.up', 'eFCI.low', 'eFCI.up')
+		colnames(effv.CI) <- c('ePI.low', 'ePI.up', 'eCI.low', 'eCI.up')
 		return(effv.CI)
 	}
 
 	#############################################################
-	figPlot <- function(crcInfo, ylimit, xlabel, ylabel){
-		# plot the concentration-response curves
-		#tiff(file = paste(root_name, "_04-12.tiff", sep = ""), res = 100)
-		size <- dim(crcInfo)
-		x <- crcInfo[, 1]
-		yhat <- crcInfo[, 2]
-		expr <- crcInfo[, 3 : (size[2] - 4)]
-		if(is.vector(expr)) expr <- as.matrix(expr)
-		oci <- crcInfo[, (size[2] - 3) : (size[2] - 2)]
-		fci <- crcInfo[,  (size[2] - 1) : size[2]]
-		
-		if(missing(ylimit)) ylimit <- c((min(expr) * 100 -20), (max(expr) * 100 + 20))
-		par(mar=c(5,5,1,1))
-		plot(rep(log10(x), ncol(expr)), expr * 100, ylim = ylimit, pch = 16, xlab = xlabel, ylab = ylabel, cex = 1.8, cex.lab = 1.8, cex.axis = 1.8)
-		lines(log10(x), yhat * 100, col = 1, lwd = 1.9)
-		lines(log10(x), oci[, 1] * 100, col = 'blue', lwd = 1.9)
-		lines(log10(x), oci[, 2] * 100, col = 'blue', lwd = 1.9)
-		lines(log10(x), fci[, 1] * 100, col = 'red', lwd = 1.9)
-		lines(log10(x), fci[, 2] * 100, col = 'red', lwd = 1.9)
-		
-		#legend("topleft", inset = 0.01, root_name, box.col = 'white', cex = 1.9) 
-		#dev.off()
-	}
-	#############################################################	
 	## source('ECx.R')
-	
-	## checking experimental data (expr)
-	## main
 	
 	if (missing(x) || missing(expr) || missing(eq) || missing(param)) stop('argument missing')
 	
@@ -157,12 +132,10 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 	
 	if (is.vector(expr)){
 		if (n != length(expr)) stop("x and y should be in the same length")
-		y <- expr
 		expr <- as.matrix(expr)
-		nrep <- 1		
+		y <- expr
 	}else if (is.matrix(expr)){
 		size <- dim(expr)
-		nrep <- size[2]
 		y <- rowMeans(expr)
 		if(n != size[1]) stop("x and dim(y)[1] should be in the same length")
 	}
@@ -173,7 +146,7 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 	# }
 	
 	# nonmonotonic or monotonic
-	if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_six') Hormesis <- TRUE else Hormesis <- FALSE
+	if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five') Hormesis <- TRUE else Hormesis <- FALSE
 	
 	# define equation expression
 	fun <- switch(eq,
@@ -184,8 +157,8 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 		Hill_two = 'y ~ Beta * x / (Alpha + x)',
 		Hill_three = 'y ~ Gamma /(1 + (Alpha / x)^Beta)',
 		Hill_four = 'y ~ Delta + (Gamma - Delta) / (1 + (Alpha / x)^Beta)',
-		Hill_six = 'y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one))',
-		# Hill_nine = 'y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one)) * (Gamma_two / (1 + (Alpha_two / x)^Beta_two))',
+		Hill_five = 'y ~ 1 - (1 + (Gamma - 1) / (1 + (Alpha / x)^Beta)) * (1 - 1 / (1 + (Delta / x)^Epsilon))',
+		# Hill_nine = 'y ~ (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Delta / x)^Epsilon)) * (Gamma_two / (1 + (Alpha_two / x)^Beta_two))',
 		Weibull = 'y ~ 1 - exp(-exp(Alpha + Beta * log10(x)))',
 		Weibull_three = 'y ~ Gamma * (1 - exp(-exp(Alpha + Beta * log10(x))))',
 		Weibull_four = 'y ~ Gamma + (Delta - Gamma) * exp(-exp(Alpha + Beta * log10(x)))',		
@@ -207,40 +180,53 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 		Biphasic = 'y ~ Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))'
 	)
 	
-	## checking nls2 package, use the nls2 or built-in nls for curve fitting
-	#if(require(nls2)){
+	## checking minpack.lm package, use the nlsLM or built-in nls for curve fitting
+	#if(require(minpack.lm)){
 	dframe <- data.frame(x, y)
 	
-	if(requireNamespace("nls2", quietly = TRUE)){
-		print("use the nls2 package")
+	if(requireNamespace("minpack.lm", quietly = TRUE)){
+		print("use the minpack.lm package")
 		
 		if(eq == "Weibull" || eq == "Logit" || eq == "Hill" || eq == "Hill_two"){
-			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.control(maxiter = 1000), algorithm = algo)
+			fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.lm.control(maxiter = 1000))
 		
 		}else if(eq == "BCW" || eq == "BCL" || eq == "GL" || eq == 'Brain_Consens' || eq == "Hill_three" || eq == 'Weibull_three' || eq == 'Logit_three'){
-			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.control(maxiter = 1000), algorithm = algo)
+			fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.lm.control(maxiter = 1000))
 		
 		}else if(eq == 'BCV'|| eq == 'Cedergreen' || eq == "Hill_four" || eq == 'Weibull_four' || eq == 'Logit_four'){
-			#fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.control(maxiter = 1000), algorithm = "grid-search")
-			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.control(maxiter = 1000), algorithm = algo)
-		}else if(eq == 'Beckon' || eq == 'Biphasic'){
-			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.control(maxiter = 1000), algorithm = algo)
-			#fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
-		}else if(eq == 'Hill_six'){
-			fit <- nls2::nls2(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Alpha_one = param[4], Beta_one = param[5], Gamma_one = param[6]), control = nls.control(maxiter = 1000), algorithm = algo)
-		} else{
+			#fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+			fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+		}else if(eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five'){
+			fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.lm.control(maxiter = 1000))
+			#fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
+		}else{
 			stop('input the right equation name')
 		}
 		
-		#detach(package: nls2)
+		#detach(package: minpack.lm)
 	}else {
-		stop('please install package nls2')
+		warning('please install package minpack.lm')
+		if(eq == "Weibull" || eq == "Logit" || eq == "Hill" || eq == "Hill_two"){
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.lm.control(maxiter = 1000))
+		
+		}else if(eq == "BCW" || eq == "BCL" || eq == "GL" || eq == 'Brain_Consens' || eq == "Hill_three" || eq == 'Weibull_three' || eq == 'Logit_three'){
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.lm.control(maxiter = 1000))
+		
+		}else if(eq == 'BCV'|| eq == 'Cedergreen' || eq == "Hill_four" || eq == 'Weibull_four' || eq == 'Logit_four'){
+			#fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4]), control = nls.lm.control(maxiter = 1000))
+		}else if(eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five'){
+			fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]), control = nls.lm.control(maxiter = 1000))
+			#fit <- nls(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3], Delta = param[4], Epsilon = param[5]))
+		}else{
+			stop('input the right equation name')
+		}
+		
 	}
 	
 	fitInfo <- summary(fit) # fitting information
-	
 	yhat <- predict(fit, x) # y prediction
-	res <- y - yhat
+	res <- as.vector(residuals(fit))
 	sst <- sum((y - mean(y))^2) # total sum of squares
 	sse <- sum((res)^2) # sum of squared errors
 	r2 <- 1 - sse / sst # coefficient of determination
@@ -255,37 +241,36 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 	sta <- t(c(r2, adjr2, mae, rmse, aic, aicc, bic))
 	colnames(sta) <- c('r2', 'adjr2', 'MAE', 'RMSE', 'AIC', 'AICc', 'BIC')
 	
-	paramHat <- t(as.matrix(summary(fit)$parameters[, 1]))	
+	paramHat <- coef(fit)	
 	jac <- jacobian(eq, x, paramHat) # jacobian matrix calculation
 	probT <- qt(1 - sigLev / 2, n - m) # the student t distribution
 	mse <- rmse^2  # squared residual standard error
 	covPara <- mse * solve(t(jac) %*% jac)  # covariance matrix of the parameter estimates
 	
-	gap.OCI <- sqrt(mse + diag(jac %*% covPara %*% t(jac))) # observation based confidence intervals
-	gap.FCI <- sqrt(diag(jac %*% covPara %*% t(jac))) # function based confidence intervals
+	gap.PI <- sqrt(mse + diag(jac %*% covPara %*% t(jac))) # observation based confidence intervals
+	gap.CI <- sqrt(diag(jac %*% covPara %*% t(jac))) # function based confidence intervals
 	
-	OCI.up <- yhat + probT * gap.OCI # OCI upper bound
-	OCI.low <- yhat - probT * gap.OCI # OCI lower bound
-	FCI.up <- yhat + probT * gap.FCI # FCI upper bound
-	FCI.low <- yhat - probT * gap.FCI # FCI lower bound
+	PI.up <- yhat + probT * gap.PI # PI upper bound
+	PI.low <- yhat - probT * gap.PI # PI lower bound
+	CI.up <- yhat + probT * gap.CI # CI upper bound
+	CI.low <- yhat - probT * gap.CI # CI lower bound
 	
-	crcInfo <- cbind(x, yhat, expr, OCI.low, OCI.up, FCI.low, FCI.up)
-	ciInfo <- cbind(x, yhat, OCI.low, OCI.up, FCI.low, FCI.up)
+	crcInfo <- cbind(x, yhat, expr, PI.low, PI.up, CI.low, CI.up)
+	ciInfo <- cbind(x, yhat, PI.low, PI.up, CI.low, CI.up)
 	
 	# compute highest stimulation (minimum effect) of the J-shaped curve and associated concentration. 
 	# Brain_Consens, BCV, Cedergreen, Beckon, Biphasic
 	if(Hormesis == TRUE){
 		if(eq == 'Brain_Consens') Alpha = paramHat[1]; Beta = paramHat[2]; Gamma = paramHat[3]
 		if(eq == 'BCV' || eq == 'Cedergreen') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]
-		if(eq == 'Beckon' || eq == 'Biphasic') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]; Epsilon <- paramHat[5]
-		if(eq == 'Hill_six') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Alpha_one <- paramHat[4]; Beta_one <- paramHat[5]; Gamma_one <- paramHat[6]
-		
+		if(eq == 'Beckon' || eq == 'Biphasic' || eq == 'Hill_five') Alpha <- paramHat[1]; Beta <- paramHat[2]; Gamma <- paramHat[3]; Delta <- paramHat[4]; Epsilon <- paramHat[5]
+	
 		if (eq == 'Brain_Consens') f <- function(x) 1 - (1 + Alpha * x) / (1 + exp(Beta * Gamma) * x^Beta)
 		if(eq == 'BCV') f <- function(x) 1 - Alpha * (1 + Beta * x) / (1 + (1 + 2 * Beta * Gamma) * (x / Gamma)^Delta)
 		if(eq == 'Cedergreen') f <- function(x) 1 - (1 + Alpha * exp(-1 / (x^Beta))) / (1 + exp(Gamma * (log(x) - log(Delta))))
 		if(eq == 'Beckon') f <- function(x) (Alpha + (1 - (Alpha) / (1 + (Beta / x)^Gamma))) / (1 + (x / Delta)^Epsilon)
 		if(eq == 'Biphasic') f <- function(x) Alpha - Alpha / (1 + 10^((x - Beta) * Gamma)) + (1 - Alpha) / (1 + 10^((Delta - x) * Epsilon))
-		if(eq == 'Hill_six') f <- function(x) (Gamma / (1 + (Alpha / x)^Beta)) * (Gamma_one / (1 + (Alpha_one / x)^Beta_one))
+		if(eq == 'Hill_five') f <- function(x) 1 - (1 + (Gamma - 1) / (1 + (Alpha / x)^Beta)) * (1 - 1 / (1 + (Delta / x)^Epsilon))
 		
 		# intervals for finding the minimum
 		intv <- c(x[2], x[length(x) - 1])
@@ -303,52 +288,37 @@ curveFit <- function(x, expr, eq , param, effv, fig = TRUE, ylimit, xlabel = "lo
 
 	## confidence intervals for effect concentration and effect
 	## checking argument
-	if(!missing(effv) && Hormesis == FALSE) {
-		## effect concentration and confidence intervals 
-		ecx <- ECx(eq, paramHat, effv)
-		ecx.ci <- ecxCI(ciInfo, effv)
-		ecx.ci <- cbind(t(ecx), ecx.ci)
-		
-		## effect confidence intervals 
-		effv.ci <- effvCI(ciInfo, effv, ecx)
-		effv.vec <- t(t(effv))
-		rownames(effv.vec) <- paste('E', effv * 100, sep = '')
-		colnames(effv.vec) <- 'Effect'
-		effv.ci <- cbind(effv.vec, effv.ci)
-	}else{
-		ecx.ci = NULL
-		effv.ci = NULL
-	}
-	
-	if(!missing(effv) && Hormesis == TRUE){
-		effv <- sort(effv)
-		effv_pos <- effv[effv > 0]
-		ecx <- nmECx(eq, paramHat, effv, minx)
-		if(length(effv_pos) > 0){
-			ecx.ci <- ecxCI(ciInfo, effv_pos)
-			rownames(ecx.ci) <- paste('EC', effv_pos * 100, sep = '')
+	if(!missing(effv)){
+		if(Hormesis == FALSE){
+			## effect concentration and confidence intervals 
+			ecx <- ECx(eq, paramHat, effv)
+			ecx.ci <- ecxCI(ciInfo, effv)
+			ecx.ci <- cbind(t(ecx), ecx.ci)
+			
+			## effect confidence intervals 
+			effv.ci <- effvCI(ciInfo, effv, ecx)
+			effv.vec <- t(t(effv))
+			rownames(effv.vec) <- paste('E', effv * 100, sep = '')
+			colnames(effv.vec) <- 'Effect'
+			effv.ci <- cbind(effv.vec, effv.ci)
+		}else{
+			effv <- sort(effv)
+			effv_pos <- effv[effv > 0]
+			ecx <- nmECx(eq, paramHat, effv, minx)
+			if(length(effv_pos) > 0){
+				ecx.ci <- ecxCI(ciInfo, effv_pos)
+				rownames(ecx.ci) <- paste('EC', effv_pos * 100, sep = '')
+			}		
 		}
-	}
-	
-	## non-observed effect concentration
-	## least observed effect concentration
-	## at least 3 repetition
-	if(nrep >= 3 && noec == TRUE){
-		## source('NOEC.R')
-		noecInfo <- NOEC(x, expr, sigLev)	
-	}else {
-		noecInfo <- NULL
-	}
-		
-	## show concentration-response curve
-	if(fig == TRUE){
-		## source('figPlot.R')
-		figPlot(crcInfo, ylimit, xlabel, ylabel)
+	}else{
+		ecx <- NULL
+		ecx.ci <- NULL
+		effv.ci <- NULL
 	}
 	
 	if(Hormesis == FALSE){
-		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, eci = ecx.ci, effvci = effv.ci, noecInfo = noecInfo)
+		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, ecx = ecx, eci = ecx.ci, effvci = effv.ci)
 	}else{
-		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, eci = ecx.ci, noecInfo = noecInfo)
+		list(fitInfo = fitInfo, p = paramHat, res = res, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, eci = ecx.ci)
 	}
 }

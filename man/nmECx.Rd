@@ -10,7 +10,7 @@ of J-shaped Models.
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{character vector of equations:("Brain_Consens", "BCV", "Biphasic",
-               "Hill_six")}
+               "Hill_five")}
   \item{param}{numeric matrix of fitting coefficients with rownames (models) and 
 		colnames (ALpha, Beta, Gamma, Delta, and Epsilon).
 		}
@@ -31,10 +31,6 @@ example, \eqn{effv} should be 0.5 if we want to calculate a concentration causes
 Zhu X-W, Liu S-S, Qin L-T, Chen F, Liu H-L. 2013. Modeling non-monotonic dose-response 
 relationships: Model evaluation and hormetic quantities exploration. Ecotoxicology and 
 Environmental Safety 89:130-136.\cr
-Di Veroli GY, Fornari C, Goldlust I, Mills G, Koh SB, Bramhall JL, et al. 2015. An automated 
-fitting procedure and software for dose-response curves with multiphasic features. 
-Scitific Report 5: 14701.
-Reference to {curveFit}
 }
 \author{xiangwei zhu}
 \note{For equations with less parameters, the default can be set as zero or any other 

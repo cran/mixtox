@@ -6,15 +6,15 @@ Curve Fitting and Mixture Toxicity Assessment
 }
 \description{Curve Fitting for monotonic(sigmoidal) & non-monotonic(J-shaped) 
 concentration-response data. Prediction of mixture toxicity based on reference 
-models such as 'concentration addition', 'independent action', and generalized 
-concentration addition.
+models such as 'concentration addition', 'independent action', and 'generalized 
+concentration addition'.
 }
 \details{
 \tabular{ll}{
 Package: \tab mixtox\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2016-05-08\cr
+Version: \tab 1.3.1\cr
+Date: \tab 2016-07-12\cr
 License: \tab GPL-2\cr
 }
 (1) Curve fitting of concentration-responses based on 13 monotonic(sigmoidal) and 4 
@@ -50,9 +50,6 @@ conceptual framework. Environmental Science and Technology. 46, 2564-2573.\cr
 Zhu X-W, Liu S-S, Qin L-T, Chen F, Liu H-L. 2013. Modeling non-monotonic dose-response 
 relationships: Model evaluation and hormetic quantities exploration. Ecotoxicology and 
 Environmental Safety 89:130-136.\cr
-Di Veroli GY, Fornari C, Goldlust I, Mills G, Koh SB, Bramhall JL, et al. 2015. An automated 
-fitting procedure and software for dose-response curves with multiphasic features. 
-Scitific Report 5: 14701.
 }
 \keyword{goodness of fit}
 \keyword{curve fitting}

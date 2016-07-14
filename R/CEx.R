@@ -47,8 +47,8 @@ CEx <- function(model, param, conc){
 				ev <- (p[1] + (1 - (p[1]) / (1 + (p[2] / conc[j])^p[3]))) / (1 + (conc[j] / p[4])^p[5])
 			else if(fun == "Biphasic") 
 				ev <- p[1] - p[1] / (1 + 10^((conc[j] - p[2]) * p[3])) + (1 - p[1]) / (1 + 10^((p[4] - conc[j]) * p[5]))
-			else if(fun == 'Hill_six')
-				ev <- (p[3] / (1 + (p[1] / conc[j])^p[2])) * (p[6] / (1 + (p[4] / conc[j])^p[5]))
+			else if(fun == 'Hill_five')
+				ev <- 1 - (1 + (p[3] - 1) / (1 + (p[1] / conc[j])^p[2])) * (1 - 1 / (1 + (p[4] / conc[j])^p[5]))
 			effv[i, j] <- ev
 		}
 	}
