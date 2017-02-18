@@ -7,30 +7,41 @@ Thirteen monotonic(sigmoidal) models ("Hill", "Hill_two", "Hill_three", "Hill_fo
 "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
 "BCW(Box-Cox-Weibull)", "BCL(Box-Cox-Logit)", "GL(Generalized Logit)") and four
 non-monotonic(J-shaped) models ("Brain_Consens", "BCV", "Biphasic", "Hill_five")
-are provided to fit the concentration-response data. The statistics for goodness of fit
+are provided to fit dose-response data. The goodness of fit of a model
 is evaluated by the following statistics: coefficient of
 determination (\eqn{R^2}), adjusted coefficient of determination (\eqn{R_{adj}^2}),
 root mean squared error (RMSE), mean absolute error (MAE), Akaike information criterion (AIC),
 bias-corrected Akaike information criterion(AICc), and Bayesian information criterion (BIC).
 }
 \usage{
-curveFit(x, expr, eq , param, effv, sigLev = 0.05)}
+curveFit(x, rspn, eq , param, effv, rtype = 'quantal', sigLev = 0.05, ...)}
 
 \arguments{
-  \item{x}{a numeric vector of experimental concentrations}
-  \item{expr}{a numeric matrix with one or more columns. each column represents one experiment 
-		repetition.}
-  \item{eq}{models for curve fitting: "Hill", "Hill_two", "Hill_three", "Hill_four",
-            "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
-            "BCW", "BCL", "GL", "Brain_Consens", "BCV", "Biphasic", "Hill_five".}
-  \item{param}{starting values for curve fitting, using tuneFit to get starting values.}
-  \item{effv}{numeric response for the calculation of effect concentration, [0, 1] for quantal responses.}
-  \item{sigLev}{The significant level for confidence intervals and Dunnett\'s test. The default
+\item{x}{a numeric vector of experimental concentration.}
+\item{rspn}{a numeric matrix of experimental responses with one or more replicates.}
+\item{eq}{equation used for curve fitting: "Hill", "Hill_two", "Hill_three", "Hill_four",
+           "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
+           "BCW", "BCL", "GL", "Brain_Consens", "BCV", "Biphasic", "Hill_five".}
+\item{param}{a vector of starting parameters. Use tuneFit to get the starting values.}
+\item{effv}{a numeric vector of responses for the calculation of effect concentrations.
+			Minus values(e.g., -5\%) are permited only in the condition of 'hormesis' 
+			dose-responses. 
+			Relative values(e.g., 5\%, 10\%) in the condition of 'continuous' dose-responses.
+			}
+\item{rtype}{three dose-response types: 'quantal', 'continuous', 'hormesis'. 
+			Default is 'quantal'. 
+			'quantal': dose-responses with lower limit fixed at 0 and higher limit at 1 (100%). 
+			'continuous': dose-responses with no fixed lower or higher limits.
+			'hormesis': non-monotonic J or U-shaped dose-responses with lower limit fixed at 0 
+			and higher limit at 1 (100\%).
+				}
+\item{sigLev}{the significant level for confidence intervals and Dunnett\'s test. Default
         is 0.05.}
+\item{...}{other arguments passed to nlsLM in minpack.lm.}	
 }
 \details{Curve fitting is dependent on the package minpack.lm
         (http://cran.r-project.org/web/packages/minpack.lm/index.html).\cr
-		Monotonic(sigmoidal) models are listed as follows:\cr
+		Monotonic(sigmoidal) equations are as follows:\cr
 		Hill: \deqn{E = 1/\left( {1 + {{\left( {\alpha /c} \right)}^\beta }} \right)}
 		Hill_two: \deqn{E = \beta c/\left( {\alpha  + c} \right)}
 		Hill_three: \deqn{E = \gamma /\left( {1 + {{\left( {\alpha /c} \right)}^\beta }} \right)}
@@ -104,27 +115,33 @@ curveFit(x, expr, eq , param, effv, sigLev = 0.05)}
 		at the midpoint of the
 		rising slope, and \eqn{\epsilon} the steepness of the falling(negative) slope.\cr
 		In all, \eqn{E} represents effect and \eqn{c} represents concentration.
+		
+		
 	}
 \value{
-\item{fitInfo }{curve fitting information including the formula used to fit the concentration-
-		response data. The fitted coefficients with standard errors, t test value, and p value.
-		Residual standard error and the degree of freedom are also provided.}
-\item{p }{fitted coefficients}
-\item{res }{residual}
-\item{sta }{Statistics about the goodness of fit (\eqn{R^2}, \eqn{R_{adj}^2}, MAE, RMSE, AIC,
-			AICc, and BIC)}
-\item{crcInfo }{a numeric matrix with the experimental concentration (x), fitted response (yhat),
+\item{fitInfo }{curve fitting information.}
+\item{eq }{equation used in curve fitting.}
+\item{p }{fitted parameters.}
+\item{res }{residual.}
+\item{sta }{goodness of fit.}
+\item{crcInfo }{a numeric matrix with the experimental concentration (x), predicted and
+		experimental responses,
 		experimental responses, lower and upper bounds of (non-simultaneous) prediction intervals
 		(PI.low and PI.up), and lower and upper bounds of (non-simultaneous) confidence intervals
-		(CI.low and CI.up)
+		(CI.low and CI.up).
 		}
-\item{eci }{confidence intervals of effect concentration at the response of effv}
-\item{effvci }{confidence intervals of the response effv for sigmoidal models}
-\item{minx }{concentration to induce the maximum stimulation for J-shaped models}
-\item{miny }{the maximum stimulation, only for J-shaped models}
+\item{ecx}{effect concentrations only if effv is provided.}
+\item{effvAbs}{Absolute effects corresponding to effv only in the condition of 'continuous' 
+		dose-responses.}
+\item{rtype }{dose-response type.}
+\item{rspnRange}{response range. The lower limit is the response at extremely low dose.
+				The higher limit is the response at infinite high dose.
+				}
+\item{minx }{concentration to induce the maximum stimulation for 'continuous' dose-response}
+\item{miny }{the maximum stimulation for 'continuous' data.}
 }
 \references{
-Scholze, M. et al. 2001. A General Best-Fit Method for Concentration-Response Curves and the
+Scholze, M. et al. 2001. A General Best-Fit Method for dose-response Curves and the
 Estimation of Low-Effect Concentrations. Environmental Toxicology and Chemistry
 20(2):448-457.\cr
 Zhu X-W, et.al. 2013. Modeling non-monotonic dose-response relationships: Model evaluation
@@ -140,60 +157,57 @@ Gryze, S. De, Langhans, I., Vandebroek, M., 2007. Using the correct intervals fo
 tutorial on tolerance intervals for ordinary least-squares regression. Chemom. Intell. Lab.
 Syst. 87, 147-154.
 }
-\author{xiangwei zhu}
 \note{
-	Note that the starting values for parameters are not easy to pick in curve fitting 
-	Generally, two-parameter models are more robust to bad 
-	starting values than three-parameter models. One rule of thumb is to choose models with
-	less parameters at the same level of accuracy.
-	tuneFit is recommended if users get lost in finding appropriate starting values.
+	tuneFit is recommended to find the starting values.
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
 ## example 1
-# Fit the non-monotonic concentration-response data
-
+# Fit hormesis dose-response data.
+# Calculate the concentrations that cause 5\% of 50\% inhibition.
 x <- hormesis$OmimCl$x
-expr <- hormesis$OmimCl$y
-curveFit(x, expr, eq = 'Biphasic', param = c(-0.34, 0.001, 884, 0.01, 128), effv = 0.5)
+rspn <- hormesis$OmimCl$y
+curveFit(x, rspn, eq = 'Biphasic', param = c(-0.34, 0.001, 884, 0.01, 128), 
+			effv = 0.5, rtype = 'hormesis')
 
 x <- hormesis$HmimCl$x
-expr <- hormesis$HmimCl$y
-curveFit(x, expr, eq = 'Biphasic', param = c(-0.59, 0.001, 160,0.05, 19),  effv = c(0.05, 0.5))
+rspn <- hormesis$HmimCl$y
+curveFit(x, rspn, eq = 'Biphasic', param = c(-0.59, 0.001, 160,0.05, 19),  
+			effv = c(0.05, 0.5), rtype = 'hormesis')
 
 x <- hormesis$ACN$x
-expr <- hormesis$ACN$y
-curveFit(x, expr, eq = 'Brain_Consens', param = c(2.5, 2.8, 0.6, 2.44),  effv = c(0.05, 0.5))
+rspn <- hormesis$ACN$y
+curveFit(x, rspn, eq = 'Brain_Consens', param = c(2.5, 2.8, 0.6, 2.44),  
+			effv = c(0.05, 0.5), rtype = 'hormesis')
 
 x <- hormesis$Acetone$x
-expr <- hormesis$Acetone$y
-curveFit(x, expr, eq = 'BCV', param = c(1.0, 3.8, 0.6, 2.44),  effv = c(0.05, 0.5))
+rspn <- hormesis$Acetone$y
+curveFit(x, rspn, eq = 'BCV', param = c(1.0, 3.8, 0.6, 2.44),  effv = c(0.05, 0.5), 
+			rtype = 'hormesis')
 
 ## example 2
-# Fit the concentration-response data of heavy metal Ni(2+) on MCF-7 cells.
-# Calculate the concentrations that cause 5\% and 50\% inhibition of the growth of MCF-7 and
-# corresponding confidence intervals.
-
+# Fit quantal dose-responses: the inhibition of heavy metal Ni(2+) on the growth of MCF-7 cells.
+# Calculate the concentrations that cause 5\% and 50\% inhibition. 
 x <- cytotox$Ni$x
-expr <- cytotox$Ni$y
-curveFit(x, expr, eq = 'Logit', param = c(12, 3), effv = c(0.05, 0.5))
+rspn <- cytotox$Ni$y
+curveFit(x, rspn, eq = 'Logit', param = c(12, 3), effv = c(0.05, 0.5), rtype = 'quantal')
 
 ## example 3
-# Fit the concentration-response data of Paromomycin Sulfate (PAR) on photobacteria.
-# Calculate the concentrations that cause 5\% and 50\% inhibition of the growth of photobacteria 
-# and corresponding confidence intervals.
-
+# Fit quantal dose-responses: the inhibition effect of Paromomycin Sulfate (PAR) on photobacteria.
+# Calculate the concentrations that cause 5\% and 50\% inhibition.
 x <- antibiotox$PAR$x
-expr <- antibiotox$PAR$y
-curveFit(x, expr, eq = 'Logit', param = c(26, 4), effv = c(0.05, 0.5))
+rspn <- antibiotox$PAR$y
+curveFit(x, rspn, eq = 'Logit', param = c(26, 4), effv = c(0.05, 0.5))
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{curve fitting }
-\keyword{concentration-response curve}
+\keyword{dose-response curve}
 \keyword{goodness of fit}
-\keyword{(non-simultaneous) confidence interval}
-\keyword{(non-simultaneous) prediction interval}
+\keyword{quantal dose-reponses}
+\keyword{continuous dose-reponses}
+\keyword{hormesis dose-reponses}
+\keyword{response range}
 \keyword{effect concentration}

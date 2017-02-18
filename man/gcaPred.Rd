@@ -15,8 +15,7 @@
 			mixture. Other two options are equal effect concentration 
 			ratio (eecr) and uniform design concentration ratio (udcr).
 			}
-\usage{gcaPred(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = 
-				c(0.1, 0.50, 0.80), lb = 1E-7, ub = 0.9)}
+\usage{gcaPred(model, param, mixType, effv, refEffv, rtype, lb, ub)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{vector of equation names}
@@ -27,10 +26,12 @@
   \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio; 
 		eecr: equal effect concentration ratio; udcr: uniform design concentration ratio.
 		}
-  \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
-  \item{refEffv}{to determine the concentration ranges for predicting effect.}
-  \item{lb}{lower bound for solving constructed IA using diochotomy method.}
-  \item{ub}{upper bound bound for solving constructed IA using diochotomy method.}
+  \item{effv}{numeric vector with single or multiple (scaled) effect values (0 ~ 1).}
+  \item{refEffv}{to determine the concentration ranges for predicting effect. 
+        Use scaled values (0 ~ 1).}
+  \item{lb}{lower bound for solving constructed IA using diochotomy method (default is 1E-9).}
+  \item{ub}{upper bound bound for solving constructed IA using diochotomy method(default is 9).}
+  \item{rtype}{ the response type of endpoint: 'continuous' or 'quantal' data.}
 }
 \details{The generalized concentration addition (GCA) model was proposed by Howard and Webster to 
  predict mixtures containing partial agonists (Howard and Webster, 2009). 
@@ -54,7 +55,7 @@ and Competitive Antagonists. Environ. Health Perspect. 118, 666-672.\cr
 Howard, G.J., Webster, T.F., 2009. Generalized concentration addition: A method for examining 
 mixtures containing partial agonists. J. Theor. Biol. 259, 469-477.
 }
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
 \code{\link{gcaHill}}
@@ -62,30 +63,32 @@ mixtures containing partial agonists. J. Theor. Biol. 259, 469-477.
 \examples{
 ## example 1
 # using GCA to predict the mixtures designed by equal effect concentration ratio (eecr) at the 
-# effect concentration of EC05 and EC50
+# effect concentration of EC50
 # the eecr mixture design is based on seven antibiotics(seven factors).
 model <- antibiotox$sgl$model
 param <- antibiotox$sgl$param
-gcaPred(model, param, mixType = "eecr", effv = c(0.05, 0.5))
+refEffv <- c(0.1, 0.50, 0.80)
+gcaPred(model, param, mixType = "eecr", effv = 0.5, refEffv, rtype = 'quantal')
 
 ## example 2
 # using GCA to predict the mixtures designed by uniform design concentration ratio (udcr)
-# the udcr mixture design is based on seven antibiotics(seven factors).
-# five levels (EC05, EC10, EC20, EC30, and EC50 ) are allocated in the uniform table using the 
-# pseudo-level technique (Liang et al., 2001)
-model <- antibiotox$sgl$model
-param <- antibiotox$sgl$param
-effv <- c(0.05, 0.05, 0.10, 0.10, 0.20, 0.20, 0.30, 0.30, 0.50, 0.50)
-gcaPred(model, param, mixType = "udcr", effv)
+# the udcr mixture design is based on 2 antibiotics(2 factors) and 
+# three levels (EC05, EC20, and EC50 )
+model <- antibiotox$sgl$model[1 : 2]
+param <- antibiotox$sgl$param[1 : 2, ]
+effv <- c(0.05, 0.20, 0.50)
+refEffv <- c(0.1, 0.80)
+gcaPred(model, param, mixType = "udcr", effv, refEffv, rtype = 'quantal')
 
 ## example 3
 # using GCA to predict the mixtures designed by arbitrary concentration ratio (acr)
-# the udcr mixture design is based on four heavy metals (four factors).
-# the every component in the mixture shares exactly the same ratio (0.25) 
-model <- cytotox$sgl$model[1 : 4]
-param <- cytotox$sgl$param[1 : 4, ]
-effv <- c(0.25, 0.25, 0.25, 0.25)
-gcaPred(model, param, mixType = "acr", effv)
+# the udcr mixture design is based on 2 heavy metals (2 factors).
+# the every component in the mixture shares exactly the same ratio (0.5) 
+model <- cytotox$sgl$model[1 : 2]
+param <- cytotox$sgl$param[1 : 2, ]
+effv <- c(0.5, 0.5)
+refEffv <- c(0.1, 0.80)
+gcaPred(model, param, mixType = "acr", effv, refEffv, rtype = 'quantal')
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
@@ -94,4 +97,3 @@ gcaPred(model, param, mixType = "acr", effv)
 \keyword{ uniform design concentration ratio }
 \keyword{ arbitrary concentration ratio }
 \keyword{ uniform design table}
-\keyword{ mixture effect}

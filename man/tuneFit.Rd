@@ -17,7 +17,7 @@ J-shaped models ("Brain_Consens", "BCV", "Biphasic", "Hill_five")
 are provided to fit the concentration-response data. 
 }
 \usage{
-tuneFit(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000, 
+tuneFit(conc, rspn, eq = 'Weibull', effv, rtype = 'quantal', rsq = 0.6, highBar = 5000, 
 		bar = 1000, sav = FALSE)}
 
 \arguments{
@@ -27,19 +27,15 @@ tuneFit(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
   \item{eq}{models for curve fitting: "Hill", "Hill_two", "Hill_three", "Hill_four",
             "Weibull", "Weibull_three", "Weibull_four", "Logit", "Logit_three", "Logit_four",
             "BCW", "BCL", "GL", "Brain_Consens", "BCV", "Biphasic", "Hill_five".}
-  \item{effv}{numeric response for the calculation of effect concentration, [0, 1] for 
-				quantal respones.}
-  \item{rsq}{r2 (rsq) is uased to control the bad fit.}
-  \item{highBar}{if the number of starting values exceeds highBar, A random sample of 
+  \item{rtype}{the response type of endpoint: 'continuous' or 'quantal' data.}
+  \item{effv}{numeric response to calculate effect concentration, scaled respones [0, 1].}				
+  \item{rsq}{r2 below which would be ignored.}
+  \item{highBar}{if the number of starting values exceeds highBar, a random sample of 
 					starting values will be taken.}
   \item{bar}{the number of random samples.}
   \item{sav}{save fitting results in a text file (TRUE/FALSE).}
 }
-\details{The starting values are indispensable for nonlinear optimization algorithms. 
-Guessing appropriate starting values requires significant experience and statistical 
- insight. However, users in the area of toxicology always get confused and frustrated 
- in trying so many times to fit a concentration-response curve successfully. 
-	tuneFit provides high frequency trial and error approach to find appropriate starting 
+\details{tuneFit provides high frequency trial and error approach to find appropriate starting 
 	values for users. It will deploy those starting values one by one until 
 	finding the right one.\cr
 	Function tuneFit can also be used to fit the concentration response data for a batch of 
@@ -49,8 +45,6 @@ Guessing appropriate starting values requires significant experience and statist
 \item{sta }{goodness of fit statistics: (\eqn{R^2}, \eqn{R_{adj}^2}, MAE, RMSE, AIC,
 			AICc, and BIC)}
 }
-
-\author{xiangwei zhu}
 \note{
 	tuneFit will load the file staval.rda which contains hundreds of starting values for each 
 	of the sigmoidal and hormetic models. However, 

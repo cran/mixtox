@@ -1,7 +1,7 @@
 exportPattern(".")
 importFrom("graphics", "legend", "lines", "par", "plot")
-importFrom("stats", "predict", "qf", "qt",
-             "spline", "uniroot", "optimize", "qqnorm", "qqline", "coef", 
+importFrom("stats", "predict", "qt", "qqnorm",
+             "spline", "uniroot", "optimize", "qnorm", "qqline", "coef", 
 			 "nls", "residuals")
 importFrom("utils", "combn", "write.table")
 import(minpack.lm)

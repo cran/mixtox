@@ -9,8 +9,7 @@
 			an arbitary proportion for each component in a mixture; (2)equal effect 
 			concentration ratio (eecr); (3) uniform design concentration ratio (udcr).
 			}
-\usage{iaPred(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints, 
-		lb = 1e-9, ub = 6)}
+\usage{iaPred(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{ character vector of models: Hill, Weibull, Logit, BCW, BCL, GL}
@@ -56,7 +55,7 @@ Chemistry and Chemical Engineering. Chemometrics and Intelligent Laboratory Syst
 Backhaus, T., Faust, M., 2012. Predictive environmental risk assessment of chemical mixtures: A 
 conceptual framework. Environmental Science and Technology. 46, 2564-2573.
 }
-\author{xiangwei zhu}
+
 \note{
 Note that effv is dependent on the mixType.
 if the mixType is acr, the length of effv should be the same as that of model. 
@@ -108,4 +107,3 @@ iaPred(model, param, mixType = "acr", effv)
 \keyword{ uniform design concentration ratio }
 \keyword{ arbitrary concentration ratio }
 \keyword{ uniform design table}
-\keyword{ mixture effects}

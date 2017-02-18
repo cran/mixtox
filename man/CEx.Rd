@@ -7,12 +7,12 @@
 \usage{CEx(model, param, conc)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{model}{character vector of equation names}
-  \item{param}{numeric matrix of fitting coefficients with rownames (equation selected) and 
+  \item{model}{a character vector of equation names}
+  \item{param}{a numeric matrix of fitting coefficients with rownames (equation selected) and 
   colnames (ALpha, Beta, and Gamma). For equations with two parameters, Gamma can be set as 
   zero or any other numeric value.
   }
-  \item{conc}{numeric vector with single or multiple concentrations.}
+  \item{conc}{a numeric vector with single or multiple concentrations.}
 }
 \details{Responses will be calculated with provided equations (model), associated 
 fitting parameters (param), and concentrations.
@@ -28,7 +28,7 @@ Scholze, M. et al. 2001. A General Best-Fit Method for Concentration-Response Cu
  Estimation of Low-Effect Concentrations. Environmental Toxicology and Chemistry 20(2):448-457.
  
 }
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \examples{
@@ -44,6 +44,12 @@ CEx(model, param, conc = c(0.1, 0.02))
 model <- cytotox$sgl$model
 param <- cytotox$sgl$param
 CEx(model, param, conc = c(0.00001, 0.00002)) 
+
+## example 3
+# calculate the response ranges
+model <- hormesis$sgl$model
+param <- hormesis$sgl$param
+CEx(model, param, conc = c(0, 1e20))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

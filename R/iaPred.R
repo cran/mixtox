@@ -1,4 +1,4 @@
-iaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints, lb = 1e-9, ub = 6){
+iaPred <- function(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6){
 	## independent action prediction
 	## source('ECx.R')
 	

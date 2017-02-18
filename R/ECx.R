@@ -1,47 +1,75 @@
-ECx <- function(model, param, effv){
+ECx <- function(model, param, effv, rtype = 'quantal', Scaled = TRUE){
 	#calculate effect concentrations using associated inverse function
 	if (missing(model) || missing (param)) stop('argument missing')
-	if (missing(effv)) effv = 0.5
+	if (missing(effv)) stop('error! input effv in ECx')
 	if (is.vector(param)) param <- t(param)
-	
-	effv <- sort(effv)
-	ecx <- matrix(0, length(model), length(effv))
+	#effv <- sort(effv)
 
+	if(max(effv) >= 1.0){
+		rtype <- 'continuous'
+		Scaled <- FALSE
+	}
+	
+	ecx <- matrix(0, length(model), length(effv))
+	
+	if((rtype == 'continuous' || rtype == 'ctn') && Scaled == TRUE){
+		rspnRange <- matrix(0, length(model), 2)
+		rspnRange <- CEx(model, param, c(0, 1e20))
+		effvAbs <- matrix(0, length(model), length(effv))
+		
+		for(j in seq(model)) effvAbs[j, ] <- rspnRange[j , 1] + (rspnRange[j , 2] - rspnRange[j , 1]) * effv
+	}
+	
+	effv0 <- effv
+	
 	for (i in seq(model)){
 		fun <- model[i]
 		p <- param[i, ]
-		if (fun == 'Hill')
-			ec <- p[1] / ((1 / effv - 1)^(1 / p[2]))
-		else if (fun == 'Hill_two')
-			ec <- p[1] * effv / (p[2] - effv)
-		else if (fun == 'Hill_three')
-			ec <- p[1] / ((p[3] / effv - 1)^(1 / p[2]))
-		else if(fun == 'Hill_four')
-			ec <- p[1] / (((p[3] - p[4]) / (effv - p[4]) - 1)^(1 / p[2]))
-		else if(fun == 'Weibull')
-			ec <- exp(-(-log(log(-1 / (-1 + effv))) + p[1]) * log(10) / p[2])
-		else if(fun == 'Weibull_three')
-			ec <- exp(-(-log(log(p[3] / (p[3] - effv))) + p[1]) * log(10) / p[2])
-		else if(fun == 'Weibull_four')
-			ec <- exp((log(log((-p[4] + p[3]) / (p[3] - effv))) - p[1]) * log(10) / p[2])
-		else if (fun == "Logit")
-			ec <- exp(-log(10) * (p[1] + log(-(-1 + effv) / (effv))) / p[2])
-		else if(fun == 'Logit_three')
-			ec <- exp(-log(10) * (p[1] + log((p[3] - effv) / effv)) / p[2])
-		else if(fun == 'Logit_four')
-			ec <- exp(-log(10) * (p[1] + log(-(p[3] - effv) / (p[4] - effv))) / p[2])
-		else if (fun == "BCW")
-			ec <- exp(log(-(p[1] * p[3] - p[2] - log(-log(1 - effv)) * p[3]) / p[2]) / p[3])
-		else if (fun == "BCL")
-			ec <- exp(log(-(p[1] * p[3] - p[2] + log(-(-1 + effv) / effv) * p[3]) / p[2]) / p[3])
-		else if (fun == "GL")
-			ec <- exp(-log(10) * (p[1] + log(exp(-log(effv) / p[3]) - 1)) / p[2])
+		
+		if((rtype == 'continuous' || rtype == 'ctn') && Scaled == TRUE) effv0 <- effvAbs[i, ]
 
+		ec <- switch(fun,
+			'Hill' = p[1] / ((1 / effv0 - 1)^(1 / p[2])),
+			'Hill_two' = p[1] * effv0 / (p[2] - effv0),
+			'Hill_three' = p[1] / ((p[3] / effv0 - 1)^(1 / p[2])),			
+			'Hill_four' = p[1] / (((p[3] - p[4]) / (effv0 - p[4]) - 1)^(1 / p[2])),
+			'Weibull' = exp(-(-log(log(-1 / (-1 + effv0))) + p[1]) * log(10) / p[2]),
+			'Weibull_three' = exp(-(-log(log(p[3] / (p[3] - effv0))) + p[1]) * log(10) / p[2]),
+			'Weibull_four' = exp((log(log((-p[4] + p[3]) / (p[3] - effv0))) - p[1]) * log(10) / p[2]),
+			"Logit" = exp(-log(10) * (p[1] + log(-(-1 + effv0) / (effv0))) / p[2]),
+			'Logit_three' = exp(-log(10) * (p[1] + log((p[3] - effv0) / effv0)) / p[2]),
+			'Logit_four' = exp(-log(10) * (p[1] + log(-(p[3] - effv0) / (p[4] - effv0))) / p[2]),
+			"BCW" = exp(log(-(p[1] * p[3] - p[2] - log(-log(1 - effv0)) * p[3]) / p[2]) / p[3]),
+			"BCL" = exp(log(-(p[1] * p[3] - p[2] + log(-(-1 + effv0) / effv0) * p[3]) / p[2]) / p[3]),
+			"GL" = exp(-log(10) * (p[1] + log(exp(-log(effv0) / p[3]) - 1)) / p[2])
+		)
+		
 		ecx[i, ] <- ec
 	}
 	
-	colName <- paste('EC', effv * 100, sep = '')
+	if(rtype == 'quantal'){
+		colName <- paste0('EC', effv * 100)
+		
+	}else if(rtype == 'continuous' || rtype == 'ctn'){
+	
+		if(Scaled == FALSE) colName <- paste0('EC', effv)
+		
+		if(Scaled == TRUE){
+			colName <- paste0('EC', effv * 100)
+			colNameAbs <- paste0('Abs_rspn@E', effv * 100)
+			colnames(effvAbs) <- colNameAbs
+			
+			if(is.null(rownames(param))) rownames(effvAbs) <- model else rownames(effvAbs) <- rownames(param)
+		}
+	}
+	
 	colnames(ecx) <- colName
-	if (is.null(rownames(param)))  rownames(ecx) <- model else rownames(ecx) <- rownames(param)
-	return(ecx)
+	
+	if(is.null(rownames(param))) rownames(ecx) <- model else rownames(ecx) <- rownames(param)
+	
+	if((rtype == 'continuous' || rtype == 'ctn') && Scaled == TRUE){
+		list(ecx = ecx, effvAbs = effvAbs)
+	}else{
+		return(ecx)
+	}
 }

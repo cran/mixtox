@@ -11,7 +11,7 @@
 			options are equal effect concentration ratio (eecr) and uniform design concentration 
 			ratio (udcr).
 			}
-\usage{gcaHill(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = c(0.10, 0.50))}
+\usage{gcaHill(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
      \item{model}{character vector of equation names, just Hill_two}
@@ -20,8 +20,11 @@
 		}
   \item{mixType}{experimental design of the mixture. acr: arbitrary concentration ratio; 
 		eecr: equal effect concentration ratio; udcr: uniform design concentration ratio.}
-  \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
-  \item{refEffv}{to determine the concentration ranges for predicting effect.}
+  \item{effv}{numeric vector with single or multiple (scaled) effect values (0 ~ 1).}
+  \item{refEffv}{to determine the concentration ranges for predicting effect. 
+         Use scaled values (0 ~ 1).}
+  \item{rtype}{ the response type of endpoint: 'continuous' or 'quantal' data.}
+
 }
 \details{The generalized concentration addition (GCA) model was proposed by Howard and Webster 
 		to predict mixtures containing partial agonists (Howard and Webster, 2009). Empirical 
@@ -51,7 +54,7 @@ Concentration addition, independent action and generalized concentration
 addition models for mixture effect 
 prediction of sex hormone synthesis in vitro. PLoS One 8, e70490.
 }
-\author{xiangwei zhu}
+
 \note{
  Only for concentration-response curves fitted by the Hill_two equation in curveFit.
 }
@@ -68,7 +71,7 @@ colnames(param) <- c('Alpha', 'Beta', 'Gamma')
 # using GCA to predict the mixtures designed by equal effect concentration ratio (eecr) at
 # the effect concentration of EC05 and EC50
 # the eecr mixture design is based on four heavy metals (four factors).
-gcaHill(model, param, mixType = "eecr", effv = c(0.05, 0.5))
+gcaHill(model, param, mixType = "eecr", effv = c(0.05, 0.5), rtype = 'continuous')
 
 ## example 2
 # using GCA to predict the mixtures designed by uniform design concentration ratio (udcr)
@@ -76,7 +79,7 @@ gcaHill(model, param, mixType = "eecr", effv = c(0.05, 0.5))
 # Seven levels (EC05, EC10, EC15, EC20, EC25, EC30, and EC50 ) are allocated in 
 # the uniform table
 effv <- c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.50)
-gcaHill(model, param, mixType = "udcr", effv)
+gcaHill(model, param, mixType = "udcr", effv, rtype = 'quantal')
 
 ## example 3
 # using GCA to predict the mixtures designed by arbitrary concentration ratio (acr)

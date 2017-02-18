@@ -1,4 +1,4 @@
-gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refEffv = c(0.1, 0.50, 0.80), lb = 1E-7, ub = 0.9){
+gcaPred <- function(model, param, mixType, effv, refEffv, rtype, lb, ub){
 	# generalized concentration addition prediction
 	#
 	## source('ECx.R')
@@ -29,17 +29,17 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refE
 	}
 
 
-	gConcAdd <- function(model, param, pctEcx, refEffv, lb, ub){
+	gConcAdd <- function(model, param, pctEcx, refEffv, rtype, lb, ub){
 		# generalized concentration addition
 		#refEffv <- c(0.05, 0.50, 0.90)
 		pointNum <- 22
 		#refEffv <- 0.5
 		#dilution <- 20
 
-		refEcx <- ECx(model, param, refEffv)
-		refEcx_new <- refEcx[refEcx > 0]
-		refMin <- min(refEcx_new)
-		refMax <- max(refEcx_new)
+		refEcx <- ECx(model, param, refEffv, rtype = rtype)
+		if(is.list(refEcx)) refEcx <- refEcx$ecx
+		refMin <- min(refEcx, na.rm = TRUE)
+		refMax <- max(refEcx, na.rm = TRUE)
 		conc <- 10^(seq(log10(refMin), log10(refMax), length.out = pointNum))
 		#conc <- 10^(seq(log10(refMin / dilution), log10(refMax * dilution), length.out = pointNum))
 		fac <- nrow(pctEcx)
@@ -97,17 +97,22 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refE
 	}
 	
 	if (missing(model) || missing(param) || missing(mixType) || missing(effv)) stop('argument missing')
-	
+	if(missing(refEffv)) refEffv <- c(0.1, 0.50, 0.80)
+	if(missing(lb)) lb <- 1E-8
+	if(missing(ub)) ub <- 0.9
+	if(missing(rtype)) rtype <- 'continuous'
+
 	if (length(model) >= 2){
 	
 		if (mixType == 'eecr'){
 			## equal effect concentration ratio		
-			ecx <- ECx(model, param, effv)
+			ecx <- ECx(model, param, effv, rtype = rtype)
+			if(is.list(ecx)) ecx <- ecx$ecx
 			num <- nrow(ecx)
 			mixEcx <- colSums(ecx)
 			if (length(effv) > 1) pctEcx <- ecx / t(replicate(num, mixEcx)) else pctEcx <- ecx / mixEcx
 			rownames(pctEcx) <- rownames(ecx)
-			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
+			gca <- gConcAdd(model, param, pctEcx, refEffv, rtype, lb, ub)
 			rownames(gca$y) <- paste('gca.EE', effv, sep = '')
 			designTable <- NULL
 			
@@ -117,7 +122,7 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refE
 			if(length(model) != length(effv)) stop('no consistence')
 			
 			pctEcx <- t(t(effv / sum(effv)))
-			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
+			gca <- gConcAdd(model, param, pctEcx, refEffv, rtype, lb, ub)
 			rownames(gca$y) <- 'gca.acr'
 			designTable <- NULL
 			
@@ -133,7 +138,8 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refE
 			
 			if(length(dim(tab)) == 2) uniTable <- tab
 			
-			ecx <- ECx(model, param, effv)
+			ecx <- ECx(model, param, effv, rtype = rtype)
+			if(is.list(ecx)) ecx <- ecx$ecx
 			ecxMix <- matrix(0, fac, lev)
 			
 			## uniform mixture construction
@@ -147,7 +153,7 @@ gcaPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, refE
 			mixEcx <- colSums(ecxMix)
 			pctEcx <- ecxMix / t(replicate(fac, mixEcx))
 
-			gca <- gConcAdd(model, param, pctEcx, refEffv, lb, ub)
+			gca <- gConcAdd(model, param, pctEcx, refEffv, rtype, lb, ub)
 			rowName <- paste('gca.U', seq(lev), sep = '')
 			rownames(gca$y) <- rowName
 			rownames(pctEcx) <- rownames(ecx)

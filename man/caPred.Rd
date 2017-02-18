@@ -52,7 +52,7 @@ Chemistry and Chemical Engineering. Chemometrics and Intelligent Laboratory Syst
 Backhaus, T., Faust, M., 2012. Predictive environmental risk assessment of chemical 
 mixtures: A conceptual framework. Environmental Science and Technology. 46, 2564-2573.
 }
-\author{xiangwei zhu}
+
 \note{
 Note that effv is dependent on the mixType. 
 if the mixType is acr, the length of effv should be the same as that of model. 

@@ -4,12 +4,11 @@
 \title{Residual Normal QQ Plot }
 \description{Producing a side-by-side QQ plot of the residuals against standard normal quantiles.
 }
-\usage{qq4res(res, main = '', xlabel = 'Theoretical Quantiles', 
-			ylabel = 'Residuals', lgd = NULL)}
+\usage{qq4res(object, xlabel = 'Theoretical Quantiles', ylabel = 'Residuals', 
+       lgd = NULL)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{res}{residuals.}
-  \item{main}{title }
+  \item{object}{object of class curveFit.}
   \item{xlabel, ylabel}{plot labels.}
   \item{lgd}{legend of the plot}
 }
@@ -19,15 +18,15 @@
 		the estimated standard deviation.
 }
 
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \examples{
 ## example 1
 # 
 x <- antibiotox$PAR$x
 expr <- antibiotox$PAR$y
-f <- curveFit(x, expr, eq = 'Logit', param = c(26, 4), effv = c(0.05, 0.5))
-qq4res(f$res)
+obj <- curveFit(x, expr, eq = 'Logit', rtype = 'quantal', param = c(26, 4), effv = c(0.05, 0.5))
+qq4res(obj)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -59,7 +59,7 @@ A-Mathematics Phys. Astron. 39, 264-275.\cr
 Hickernell, F.J., 1996. A generalized discrepancy and quadrature error bound. Math. Comput. 
 67, 299-322.
 }
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \examples{
 ## example 1

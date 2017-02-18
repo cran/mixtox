@@ -1,7 +1,7 @@
-tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000, bar = 1000, sav = FALSE){
+tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rtype = 'quantal', rsq = 0.6, highBar = 5000, bar = 1000, sav = FALSE){
 
 # File with the first line as header. assay name in the first column, casrn the second, and compounds' name the third column.
-# the following columns should be conc an rspn in a same number.
+# the following columns should be conc a rspn in a same number.
 	#library(minpack.lm)
 	#source('fitKenel.R')
 	#source('ECx.R')
@@ -46,8 +46,6 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
 		)
 		
 		## checking minpack.lm package, use the nlsLM or built-in nls for curve fitting
-		#if(require(minpack.lm)){
-		if (missing(x) || missing(expr) || missing(eq) || missing(param)) stop('argument missing')
 		n <- length(x) # the number of concentrations
 		mode(param) <- "numeric"
 		m <- length(param) # the number of parameters
@@ -62,7 +60,7 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
 			y <- rowMeans(expr)
 			if(n != size[1]) stop("x and dim(y)[1] should be in the same length")
 		}
-		# nonmonotonic or monotonic
+		# 
 		if(eq == 'Brain_Consens' || eq == 'BCV' || eq == 'Cedergreen' || eq == 'Biphasic' || eq == 'Hill_five') Hormesis <- TRUE else Hormesis <- FALSE
 
 		dframe <- data.frame(x, y)
@@ -70,7 +68,7 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
 			if(requireNamespace("minpack.lm", quietly = TRUE)){
 				if(eq == "Weibull" || eq == "Logit" || eq == "Hill" || eq == "Hill_two"){
 						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]), control = nls.lm.control(maxiter = 1000))
-				
+						#fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2]))
 				}else if(eq == "BCW" || eq == "BCL" || eq == "GL" || eq == 'Brain_Consens' || eq == "Hill_three" || eq == 'Weibull_three' || eq == 'Logit_three'){
 						fit <- minpack.lm::nlsLM(fun, data = dframe, start = list(Alpha = param[1], Beta = param[2], Gamma = param[3]), control = nls.lm.control(maxiter = 1000))
 				
@@ -150,7 +148,7 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
 			## checking argument
 			if(!missing(effv) && Hormesis == FALSE){
 				## effect concentration and confidence intervals 
-				ecx <- ECx(eq, paramHat, effv[1])
+				ecx <- ECx(eq, paramHat, effv[1], rtype = rtype)
 			}else{
 				ecx = n.a.
 			}
@@ -189,12 +187,14 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rsq = 0.6, highBar = 5000,
 			#message('done...')
 		})
 	}	
-	###################################################	
-	staval <- staval
+	###################################################
+	#if(require(minpack.lm)){
+	if (missing(conc) || missing(rspn) || missing(eq)) stop('argument missing')
 	if (is.vector(conc)) conc <- t(conc)
-	if (is.vector(rspn)) rspn <- t(rspn)
-	if(nrow(conc) != nrow(rspn) || ncol(conc) != ncol(rspn))
-		stop('row(column) of conc and rspn mismatch')
+	if(is.vector(rspn)) rspn <- t(rspn)
+	if(!identical(dim(conc), dim(rspn))) stop('conc and rspn mismatch')
+
+	staval <- staval
 	param_name <- c('Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta')
 	param <- switch(eq,
 		Hill = staval$Hill,

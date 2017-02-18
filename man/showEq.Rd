@@ -36,7 +36,7 @@ Gryze, S. De, Langhans, I., Vandebroek, M., 2007. Using the correct intervals fo
 tutorial on tolerance intervals for ordinary least-squares regression. Chemom. Intell. Lab.
 Syst. 87, 147-154.
 }
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{

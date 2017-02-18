@@ -1,8 +1,8 @@
-nmECx <- function(model, param, effv, minx){
+nmECx <- function(model, param, effv, minx, gap = -1e-6){
 	#calculate effect concentrations using associated inverse function
 	if (missing(model) || missing (param) || missing(effv) || missing(minx)) stop('argument missing')
 	if (is.vector(param)) param <- t(param)
-	effv <- sort(effv)
+	#effv <- sort(effv)
 	
 	if(min(effv) < 0){
 		effv_neg <- effv[effv < 0]
@@ -11,16 +11,20 @@ nmECx <- function(model, param, effv, minx){
 		len_pos <- length(effv_pos)
 
 		ecx <- matrix(0, length(model), (len_neg * 2 + len_pos))
-		left_name <- paste('ECL', effv_neg * 100, sep = '')
-		right_name <- paste('ECR', effv_neg * 100, sep = '')
-		if(len_pos > 0) pos_name <- paste('EC', effv_pos * 100, sep = '') else pos_name <- c()
+		
+		effv_negD <- as.numeric(format(effv_neg, digit = 3))
+		effv_posD <- as.numeric(format(effv_pos, digit = 3))
+		left_name <- paste('ECL', effv_negD * 100, sep = '')
+		right_name <- paste('ECR', effv_negD * 100, sep = '')
+		if(len_pos > 0) pos_name <- paste('EC', effv_posD * 100, sep = '') else pos_name <- c()
 		colName <- c(left_name, right_name, pos_name)
 		
 	}else{
 		len_pos <- length(effv)
 		len_neg <- 0
 		ecx <- matrix(0, length(model), len_pos)
-		colName <- paste('EC', effv * 100, sep = '')
+		effvD <- as.numeric(format(effv, digit = 3))
+		colName <- paste('EC', effvD * 100, sep = '')
 	}
 	colnames(ecx) <- colName
 	if (is.null(rownames(param)))  rownames(ecx) <- model else rownames(ecx) <- rownames(param)
@@ -47,7 +51,12 @@ nmECx <- function(model, param, effv, minx){
 		if(len_neg > 0){
 			# the left side of minx
 			for(k in seq(len_neg)){
-				fun_body <- paste(f, '-', effv_neg[k], sep = '')
+				negk <- effv_neg[k]
+				if(negk > gap){
+					negk <- gap - 1 / 100000 # correst the response gap between response limit at extreme low concentration with theoretical limit of zero
+					warning('response ', effv_neg[k], ' was set to left limit of response ', negk)
+				}
+				fun_body <- paste(f, '-', negk, sep = '')
 				fun = function(xx) eval(parse(text = fun_body))
 				root <- uniroot(fun, c(eps, a), tol = eps)$root
 				ecx[i, k] <- root

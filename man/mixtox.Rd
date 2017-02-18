@@ -13,13 +13,13 @@ concentration addition'.
 \tabular{ll}{
 Package: \tab mixtox\cr
 Type: \tab Package\cr
-Version: \tab 1.3.1\cr
-Date: \tab 2016-07-12\cr
+Version: \tab 1.3.2\cr
+Date: \tab 2017-02-18\cr
 License: \tab GPL-2\cr
 }
 (1) Curve fitting of concentration-responses based on 13 monotonic(sigmoidal) and 4 
-non-monotonic(J-shaped) models, goodness of fit, and confidence intervals 
-calculation. \cr
+non-monotonic(J-shaped) models, goodness of fit, and calculation of confidence interval 
+. \cr
 (2) Experimental design for mixture toxicity.  
 	acr: arbitrary concentration ratio; 
 	eecr: equal effect concentration ratio;

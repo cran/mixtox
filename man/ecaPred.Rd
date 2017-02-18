@@ -37,7 +37,7 @@
 		on the concentration addition.
 		}
 \value{ A numeric matrix of predicted effects}
-\author{xiangwei zhu}
+
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
