@@ -1,4 +1,4 @@
-gcaHill <- function(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype){
+gcaHill <- function(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype, sav = FALSE){
 	## generalized concentration addition based only on Hill_two function
 	gconcAdd <- function(model, param, pctEcx, refEffv, rtype){
 	# concentration addition
@@ -84,5 +84,17 @@ gcaHill <- function(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype)
 	}else {
 		stop('needs more than one component')
 	}
-	list(x = gca$x, e = gca$y, pct = t(pctEcx), unitab = designTable)
+
+	Results <- list(x = gca$x, e = gca$y, pct = t(pctEcx), unitab = designTable)
+	
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("gcaHill_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

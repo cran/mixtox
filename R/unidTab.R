@@ -1,4 +1,4 @@
-unidTab <- function(lev, fac, algo = 'cd2') {
+unidTab <- function(lev, fac, algo = 'cd2', sav = FALSE) {
 	##########################################
 	# parameter initialize 
 	# algo <- cd2 // sd2
@@ -352,14 +352,25 @@ unidTab <- function(lev, fac, algo = 'cd2') {
 	if (flag == "b") {
 	
 		if (tab.orn$D <= tab.adj$D)
-			return(tab.orn)
+			Results <- tab.orn
 		else
-			return(tab.adj)
+			Results <- tab.adj
 			
 	}else if (flag == "o"){
-		return(tab.orn)
+		Results <- tab.orn
 		
 	}else if (flag == "a") {
-		return(tab.adj)
+		Results <- tab.adj
 	}
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("unidTab_", lev, "_", fac, "_" , Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+	
+	return(Results)
 }

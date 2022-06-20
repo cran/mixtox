@@ -1,4 +1,4 @@
-caPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPoints){
+caPred <- function(model, param, mixType = "eecr", effv, effPoints, sav = FALSE){
 	## concentration addition prediction
 	##source('ECx.R')
 
@@ -74,5 +74,15 @@ caPred <- function(model, param, mixType = c("acr", "eecr", "udcr"), effv, effPo
 	}else {
 		stop('needs more than one component')
 	}
-	list(ca = ca, e = effPoints, pct = t(pctEcx), unitab = designTable)
+	Results <- list(ca = ca, e = effPoints, pct = t(pctEcx), unitab = designTable)
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("caPred_", mixType, "_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+	return(Results)
 }

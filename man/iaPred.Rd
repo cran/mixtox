@@ -9,7 +9,7 @@
 			an arbitary proportion for each component in a mixture; (2)equal effect 
 			concentration ratio (eecr); (3) uniform design concentration ratio (udcr).
 			}
-\usage{iaPred(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6)}
+\usage{iaPred(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{ character vector of models: Hill, Weibull, Logit, BCW, BCL, GL}
@@ -26,7 +26,10 @@
   \item{effPoints}{numeric vector [0 ~ 1] to predict effect concentrations.}
   \item{lb}{lower bound for solving constructed IA using diochotomy method.}
   \item{ub}{upper bound bound for solving constructed IA using diochotomy method.}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
+
 \details{IA is designed for mixtures of chemicals that have distinct 
 		mechanisms of action. The IA model is commonly defined as:
 		\deqn{{\rm{E}}({c_{mix}}) = 1 - (1 - {\rm{E}}({c_1}))(1 - {\rm{E}}({c_2})) \cdot  
@@ -57,13 +60,16 @@ conceptual framework. Environmental Science and Technology. 46, 2564-2573.
 }
 
 \note{
-Note that effv is dependent on the mixType.
-if the mixType is acr, the length of effv should be the same as that of model. 
-when a total ratio was less than 100%, each ratio will be adjusted to totally make 100%.\cr
-if the mixType is eecr, effv should contain at least one value
-if the mixTpe is udcr, elements in effv are levels, the length of effv is the same as 
-the number of runs. the number of runs should be in accordance with the length of 
-model based on the uniform design.
+Note that effv is dependent on the mixType.\cr
+If the mixType is acr, effv is supposed to be a vector with the ratio of each components and its length 
+should be the same as the number of components. For instance, effv can be c(4, 1) if one wants to mix two 
+compounds with a ratio of 4:1. One can also set effv as c(80, 20) or c(0.8, 0.2) or any other values 
+with the same ratio as 4:1. The program will convert the ratio to a range of 0 to 100\%.\cr
+If the mixType is eecr, effv is supposed to be the effect values. For instance, effv = c(0.5) means one mixture 
+will be prepared and each of its components will be mixed in a ratio equal to EC50. More than one eecr mixtures 
+can be achieved by assigning more effect values to effv, e.g., effv = c(0.05, 0.10, 0.5) \cr
+If the mixType is udcr, elements in effv are levels in a uniform table, the length of effv is the same as 
+the number of runs. the number of runs should be consistent with the number of components in the uniform design.
 }
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 \seealso{

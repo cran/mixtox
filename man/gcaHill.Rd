@@ -11,7 +11,7 @@
 			options are equal effect concentration ratio (eecr) and uniform design concentration 
 			ratio (udcr).
 			}
-\usage{gcaHill(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype)}
+\usage{gcaHill(model, param, mixType, effv, refEffv = c(0.10, 0.50), rtype, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
      \item{model}{character vector of equation names, just Hill_two}
@@ -24,6 +24,8 @@
   \item{refEffv}{to determine the concentration ranges for predicting effect. 
          Use scaled values (0 ~ 1).}
   \item{rtype}{ the response type of endpoint: 'continuous' or 'quantal' data.}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.}
 
 }
 \details{The generalized concentration addition (GCA) model was proposed by Howard and Webster 

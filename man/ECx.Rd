@@ -6,7 +6,7 @@
 Effect concentrations are calculated at particular effects based on the fitting coefficients 
 of 13 sigmoidal models.
 }
-\usage{ECx(model, param, effv, rtype = 'quantal', Scaled = TRUE)}
+\usage{ECx(model, param, effv, rtype = 'quantal', Scaled = TRUE, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{a character vector of equations:("Hill", "Hill_two", "Hill_three", "Hill_four", 
@@ -18,6 +18,8 @@ of 13 sigmoidal models.
   \item{rtype}{ the response type of endpoint: 'continuous' or 'quantal' data.}
   \item{Scaled}{only for 'continuous' data. To indicate if the effv is scaled 
   by response ranges to 0~1 or not (default is TRUE).}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.}
 }
 
 \details{effect concentrations will be calculated with provided equations (model), associated 

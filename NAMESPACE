@@ -3,5 +3,6 @@ importFrom("graphics", "legend", "lines", "par", "plot")
 importFrom("stats", "predict", "qt", "qqnorm",
              "spline", "uniroot", "optimize", "qnorm", "qqline", "coef", 
 			 "nls", "residuals")
-importFrom("utils", "combn", "write.table")
+importFrom("utils", "combn", "write.table", "read.table")
 import(minpack.lm)
+

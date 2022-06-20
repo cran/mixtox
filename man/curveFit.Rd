@@ -14,7 +14,7 @@ root mean squared error (RMSE), mean absolute error (MAE), Akaike information cr
 bias-corrected Akaike information criterion(AICc), and Bayesian information criterion (BIC).
 }
 \usage{
-curveFit(x, rspn, eq , param, effv, rtype = 'quantal', sigLev = 0.05, ...)}
+curveFit(x, rspn, eq , param, effv, rtype = 'quantal', sigLev = 0.05, sav = FALSE, ...)}
 
 \arguments{
 \item{x}{a numeric vector of experimental concentration.}
@@ -30,13 +30,15 @@ curveFit(x, rspn, eq , param, effv, rtype = 'quantal', sigLev = 0.05, ...)}
 			}
 \item{rtype}{three dose-response types: 'quantal', 'continuous', 'hormesis'. 
 			Default is 'quantal'. 
-			'quantal': dose-responses with lower limit fixed at 0 and higher limit at 1 (100%). 
+			'quantal': dose-responses with lower limit fixed at 0 and higher limit at 1 (100\%). 
 			'continuous': dose-responses with no fixed lower or higher limits.
 			'hormesis': non-monotonic J or U-shaped dose-responses with lower limit fixed at 0 
 			and higher limit at 1 (100\%).
 				}
 \item{sigLev}{the significant level for confidence intervals and Dunnett\'s test. Default
         is 0.05.}
+\item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 \item{...}{other arguments passed to nlsLM in minpack.lm.}	
 }
 \details{Curve fitting is dependent on the package minpack.lm

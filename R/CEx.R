@@ -1,4 +1,4 @@
-CEx <- function(model, param, conc){
+CEx <- function(model, param, conc, sav = FALSE){
 	# calculate response based on concentration
 	if (missing(model) || missing (param) || missing(conc)) stop('argument missing')
 	#if (missing(conc)) conc = 0.00005
@@ -56,5 +56,14 @@ CEx <- function(model, param, conc){
 	colName <- paste('Rspn_@_', conc, sep = '')
 	colnames(effv) <- colName
 	if(is.null(rownames(param))) rownames(effv) <- model else rownames(effv) <- rownames(param)
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("CEx_", Sys.Date(), ".txt", sep = "")
+			write.table(effv, svfile, sep = "\t", quote = F, col.names=NA)
+		} else{
+			write.table(effv, sav, sep = "\t", quote = F, col.names=NA)
+		}
+	}
 	return(effv)
 }

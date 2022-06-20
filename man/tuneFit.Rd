@@ -33,7 +33,8 @@ tuneFit(conc, rspn, eq = 'Weibull', effv, rtype = 'quantal', rsq = 0.6, highBar 
   \item{highBar}{if the number of starting values exceeds highBar, a random sample of 
 					starting values will be taken.}
   \item{bar}{the number of random samples.}
-  \item{sav}{save fitting results in a text file (TRUE/FALSE).}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+    a custom file directory: save output to the custom file directory.} 
 }
 \details{tuneFit provides high frequency trial and error approach to find appropriate starting 
 	values for users. It will deploy those starting values one by one until 

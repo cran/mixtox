@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Calculating Confidence Intervals }
 \description{calculating non-simultanous confidence intervals and prediction intervals}
-\usage{getCI(object, effv, Scaled = TRUE, sigLev = 0.05)}
+\usage{getCI(object, effv, Scaled = TRUE, sigLev = 0.05, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ object of class curveFit.}
@@ -11,6 +11,8 @@
   \item{Scaled}{indicating if effv was scaled or not(TRUE/FALSE) in continuous dose-response 
                 (rtype = 'continuous')}
   \item{sigLev}{significance level(default is 0.05).}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+    a custom file directory: save output to the custom file directory.} 
 }
 \details{ 
 The Delta method (Dybowski et al, 2001) is used to construct confidence
@@ -19,6 +21,8 @@ intervals for predicted responses.
 \value{
 \item{xmat }{effect concentration(s) and corresponding CIs and PIs}
 \item{emat }{effect(s) and and corresponding CIs and PIs}
+\item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
 \references{ Zhu, X.-W. and Chen, J.-Y. (2016). mixtox: An R Package for Mixture 
             Toxicity Assessment. R Journal, 8(2).\cr

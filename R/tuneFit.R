@@ -251,9 +251,13 @@ tuneFit <- function(conc, rspn, eq = 'Weibull', effv, rtype = 'quantal', rsq = 0
 	#rownames(fit_sta) <- rownames(conc)
 	if(isTRUE(rownames(conc))) rownames(fit_sta) <- rownames(conc) else rownames(fit_sta) <- paste('fit_', as.vector(seq(nrow(conc))), sep ='')
 
-	if(sav == TRUE) {
-		svfile = paste(eq, "_", Sys.Date(), ".fit", sep = "")
-		write.table(fit_sta, svfile, sep = "\t", quote = F)
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("tuneFit_", eq, "_", Sys.Date(), ".txt", sep = "")
+			write.table(fit_sta, svfile, sep = "\t", quote = F)
+		} else{
+			write.table(fit_sta, sav, sep = "\t", quote = F)
+		}
 	}
 	list(sta = fit_sta)
 }

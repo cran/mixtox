@@ -8,7 +8,7 @@
   models ('Weibull_four', 'Logit_four', 'Hill_four') were employed for continuous data. 
 }
 \usage{BMD(object, bmr = 0.10, backg = 0, def = 'additional', eq = 'as.is', 
-         sigLev = 0.05, ci = 'CI')}
+         sigLev = 0.05, ci = 'CI', sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ object of class curveFit.}
@@ -22,6 +22,8 @@
  \item{sigLev}{the significance level for Dunnett's test. The default is 0.05.}
  \item{ci}{types of confidence intervals (CI or PI).CI: non-simultaneous confidence intervals;
 			PI: non-simultaneous prediction intervals.}  
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
 \details{ Selecting the Benchmark Response Level (BMR) (https://www.epa.gov/bmds/
           benchmark-dose-bmd-methods#bmr).BMR is usually set as 0.10.

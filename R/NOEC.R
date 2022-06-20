@@ -1,4 +1,4 @@
-NOEC <- function(x, rspn, blankC = FALSE, sigLev = 0.05, alternertive = 'B'){
+NOEC <- function(x, rspn, blankC = FALSE, sigLev = 0.05, alternertive = 'B', sav = FALSE){
 	# NOEC and LOEC calculation using Dunnett's test
 	## Dunnett, C.W., 1964. New tables for multiple comparisons with controls. Biometrics 30, 482-491
 	## Q: One dataset has four blank controls (C1, C2, C3, C4) and one treatment has three replicates (T1, T2, T3), 
@@ -114,5 +114,16 @@ NOEC <- function(x, rspn, blankC = FALSE, sigLev = 0.05, alternertive = 'B'){
 
 	mat <- cbind(x, DT, DTcv, noecSign)
 	colnames(mat) <- c('C/Level', 't', 'critical_value', 'sign')
-	list(mat = mat, noec = noec, loec = loec, sigLev = sigLev, DF = c(n, DF))
+	Results <- list(mat = mat, noec = noec, loec = loec, sigLev = sigLev, DF = c(n, DF))
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("NOEC_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

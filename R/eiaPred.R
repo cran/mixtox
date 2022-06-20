@@ -1,4 +1,4 @@
-eiaPred <- function(effv, sgl, mix, pctMix) {
+eiaPred <- function(effv, sgl, mix, pctMix, sav = FALSE) {
 	## calculating IA predicted effects at particular effect concentrations
 	
 	eIndAct <- function(model, param, conc){
@@ -52,5 +52,13 @@ eiaPred <- function(effv, sgl, mix, pctMix) {
 	
 	rownames(eia) <- paste('iaPred', '-E', effv * 100, sep = '')
 	colnames(eia) <- rownames(pctMix)
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("eiaPred_", Sys.Date(), ".txt", sep = "")
+			write.table(eia, svfile, sep = "\t", quote = F, col.names=NA)
+		} else{
+			write.table(eia, sav, sep = "\t", quote = F, col.names=NA)
+		}
+	}
 	return(eia)
 }

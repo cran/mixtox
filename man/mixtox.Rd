@@ -2,7 +2,7 @@
 \alias{mixtox}
 \docType{package}
 \title{
-Curve Fitting and Mixture Toxicity Assessment
+Dose-Response Curve Fitting and Mixture Toxicity Assessment
 }
 \description{Curve Fitting for monotonic(sigmoidal) & non-monotonic(J-shaped) 
 concentration-response data. Prediction of mixture toxicity based on reference 
@@ -13,8 +13,8 @@ concentration addition'.
 \tabular{ll}{
 Package: \tab mixtox\cr
 Type: \tab Package\cr
-Version: \tab 1.3.2\cr
-Date: \tab 2017-02-18\cr
+Version: \tab 1.3.3\cr
+Date: \tab 2022-06-19\cr
 License: \tab GPL-2\cr
 }
 (1) Curve fitting of concentration-responses based on 13 monotonic(sigmoidal) and 4 
@@ -32,6 +32,13 @@ xiangwei zhu \cr
 Maintainer: xiangwei zhu <xwzhunc@gmail.com>
 }
 \references{
+Zhu, X.-W., Chen, J.-Y. (2016). mixtox: An R Package for Mixture Toxicity Assessment. 
+R Journal, 8(2), 422-434.\cr
+Zhu, X.-W., Ge, H.-L., Cao, Y.-B. (2016). Mixture cytotoxicity assessment of ionic liquids 
+and heavy metals in MCF-7 cells using mixtox. Chemosphere, 163, 544-551.\cr
+Zhu X-W, Liu S-S, Qin L-T, Chen F, Liu H-L. 2013. Modeling non-monotonic dose-response 
+relationships: Model evaluation and hormetic quantities exploration. Ecotoxicology and 
+Environmental Safety 89:130-136.\cr
 Dunnett, C. W. 1964. New Tables for Multiple Comparisons with a Control. Biometrics 
 30(3):482-491.\cr
 Hickernell, Fred J. 1996. A Generalized Discrepancy and Quadrature Error Bound. Mathematics of 
@@ -47,11 +54,12 @@ Wang, Yuan and Kai-Tai Fang. 1996. Uniform Design of Experiments with Mixtures. 
 Series A-Mathematics Physics Astronomy 39(3):264-275.\cr
 Backhaus, T., Faust, M., 2012. Predictive environmental risk assessment of chemical mixtures: A 
 conceptual framework. Environmental Science and Technology. 46, 2564-2573.\cr
-Zhu X-W, Liu S-S, Qin L-T, Chen F, Liu H-L. 2013. Modeling non-monotonic dose-response 
-relationships: Model evaluation and hormetic quantities exploration. Ecotoxicology and 
-Environmental Safety 89:130-136.\cr
+
 }
+\keyword{mixture toxicity}
 \keyword{goodness of fit}
+\keyword{sigmoidal dose-response curve}
+\keyword{non-monotonic dose-response curve}
 \keyword{curve fitting}
 \keyword{concentration addition}
 \keyword{independent action}

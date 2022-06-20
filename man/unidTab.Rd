@@ -8,7 +8,7 @@
 			algorithms (sd2) were employed to measure the uniformity and 
 			find the one with lowest discrepancy.
 			}
-\usage{unidTab(lev, fac, algo = "cd2")}
+\usage{unidTab(lev, fac, algo = "cd2", sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{lev}{the number of runs (levels or pseudo-levels)}
@@ -16,6 +16,8 @@
   \item{algo}{algorithms used to calculate the discrepancy. "cd2": the centered L2-discrepancy 
 		algorithm. "sd2": the symmetric discrepancy algorithm.
 		}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
 \details{Uniform design (UD) was proposed by Fang et al (Acta Math Appl Sin 3:363-372 (1980)). 
 		An appropriate uniform design table is constructed 
@@ -52,6 +54,8 @@
 		tables with the same discrepancy
 		}
   \item{D }{the discrepancy of the constructed uniform table}
+  \item{sav }{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
 \references{
 Wang, Y., Fang, K.-T., 1996. Uniform design of experiments with mixtures. Sci. China Ser. 
@@ -69,12 +73,12 @@ unidTab(11, 7)
 
 ## example 2
 # construct uniform table with 37 runs and 13 factors using the symmetric discrepancy algorithm 
-unidTab(lev = 37, fac = 13, algo = "sd2" )
+unidTab(lev = 37, fac = 13, algo = "sd2")
 
 ## example 3
 # construct uniform table with 37 runs and 13 factors using default centered L2-discrepancy 
 # algorithm
-unidTab(lev = 37, fac = 13, algo = "cd2" )
+unidTab(lev = 37, fac = 13, algo = "cd2")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

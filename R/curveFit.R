@@ -1,4 +1,4 @@
-curveFit <- function(x, rspn, eq, param, effv, rtype = 'quantal', sigLev = 0.05, ...){
+curveFit <- function(x, rspn, eq, param, effv, rtype = 'quantal', sigLev = 0.05, sav = FALSE, ...){
 	# NLS curve fitting for monotonic and non-monotonic equations
 	# x a vector of treatment concentration
 	# rspn a vector or matrix
@@ -183,11 +183,22 @@ curveFit <- function(x, rspn, eq, param, effv, rtype = 'quantal', sigLev = 0.05,
 	
 	if(Hormesis == FALSE){
 		if(is.list(ecx)){
-			list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, effvAbs = ecx$effvAbs, ecx = ecx$ecx, rtype = rtype, rspnRange = rspnRange)
+			Results <- list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, effvAbs = ecx$effvAbs, ecx = ecx$ecx, rtype = rtype, rspnRange = rspnRange)
 		}else{
-			list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, ecx = ecx, rtype = rtype, rspnRange = rspnRange)
+			Results <- list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, crcInfo = crcInfo, ecx = ecx, rtype = rtype, rspnRange = rspnRange)
 		}
 	}else{
-		list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, rtype = rtype, rspnRange = rspnRange)
+		Results <- list(fitInfo = fitInfo, eq = eq, p = paramHat, res = res, sta = sta, minx = minx, miny = miny, crcInfo = crcInfo, ecx = ecx, rtype = rtype, rspnRange = rspnRange)
 	}
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("curveFit_", eq, "_",Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

@@ -1,4 +1,4 @@
-getCI <- function(object, effv, Scaled = TRUE, sigLev = 0.05){
+getCI <- function(object, effv, Scaled = TRUE, sigLev = 0.05, sav = FALSE){
 	## object generated using curveFit
 	## Scaled(TRUE/FALSE) was used only in continuous dose-response (rtype == 'continuous')
 	##
@@ -150,5 +150,16 @@ getCI <- function(object, effv, Scaled = TRUE, sigLev = 0.05){
 			colnames(emat) <-  c('effv_abs', 'PI.low', 'PI.up', 'CI.low', 'CI.up')
 		}
 	}
-	list(xmat = xmat, emat = emat)
+	Results <- list(xmat = xmat, emat = emat)
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("getCI_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

@@ -15,7 +15,7 @@
 			mixture. Other two options are equal effect concentration 
 			ratio (eecr) and uniform design concentration ratio (udcr).
 			}
-\usage{gcaPred(model, param, mixType, effv, refEffv, rtype, lb, ub)}
+\usage{gcaPred(model, param, mixType, effv, refEffv, rtype, lb, ub, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{vector of equation names}
@@ -32,6 +32,8 @@
   \item{lb}{lower bound for solving constructed IA using diochotomy method (default is 1E-9).}
   \item{ub}{upper bound bound for solving constructed IA using diochotomy method(default is 9).}
   \item{rtype}{ the response type of endpoint: 'continuous' or 'quantal' data.}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.}
 }
 \details{The generalized concentration addition (GCA) model was proposed by Howard and Webster to 
  predict mixtures containing partial agonists (Howard and Webster, 2009). 

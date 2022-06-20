@@ -6,7 +6,7 @@
 Effect concentrations are calculated at particular effects based on the fitting coefficients 
 of J-shaped Models.
 }
-\usage{nmECx(model, param, effv, minx, gap = -1e-6)}
+\usage{nmECx(model, param, effv, minx, gap = -1e-6, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{a character vector of equations:("Brain_Consens", "BCV", "Biphasic",
@@ -17,7 +17,9 @@ of J-shaped Models.
   \item{minx}{a numeric value (vector) with single or multiple concentrations that 
                induce maximun stimulation.}
   \item{gap}{ theoritical response at the extreme low concentration predicted by a 
-				fitted model.}		   
+				fitted model.}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+    a custom file directory: save output to the custom file directory.} 	   
 }
 \details{effect concentrations will be calculated with provided equations(model), 
 associated fitting 

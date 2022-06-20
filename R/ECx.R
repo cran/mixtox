@@ -1,4 +1,4 @@
-ECx <- function(model, param, effv, rtype = 'quantal', Scaled = TRUE){
+ECx <- function(model, param, effv, rtype = 'quantal', Scaled = TRUE, sav = FALSE){
 	#calculate effect concentrations using associated inverse function
 	if (missing(model) || missing (param)) stop('argument missing')
 	if (missing(effv)) stop('error! input effv in ECx')
@@ -57,7 +57,7 @@ ECx <- function(model, param, effv, rtype = 'quantal', Scaled = TRUE){
 		if(Scaled == TRUE){
 			colName <- paste0('EC', effv * 100)
 			colNameAbs <- paste0('Abs_rspn@E', effv * 100)
-			colnames(effvAbs) <- colNameAbs
+			colnames(effvAbs) <- c(colNameAbs)
 			
 			if(is.null(rownames(param))) rownames(effvAbs) <- model else rownames(effvAbs) <- rownames(param)
 		}
@@ -68,8 +68,26 @@ ECx <- function(model, param, effv, rtype = 'quantal', Scaled = TRUE){
 	if(is.null(rownames(param))) rownames(ecx) <- model else rownames(ecx) <- rownames(param)
 	
 	if((rtype == 'continuous' || rtype == 'ctn') && Scaled == TRUE){
-		list(ecx = ecx, effvAbs = effvAbs)
-	}else{
-		return(ecx)
+		Results <- list(ecx = ecx, effvAbs = effvAbs)
+		if (sav != FALSE){
+			if(sav == TRUE) {
+				sav = paste("ECx_", Sys.Date(), ".txt", sep = "")
+			}
+		sink(sav)
+		print(Results)
+		sink()
 	}
+	}else{
+		Results <- ecx
+		if (sav != FALSE){
+			if(sav == TRUE) {
+				svfile = paste("ECx_", Sys.Date(), ".txt", sep = "")
+				write.table(Results, svfile, sep = "\t", quote = F, col.names=NA)
+			} else{
+				write.table(Results, sav, sep = "\t", quote = F, col.names=NA)
+			}
+		}
+	}
+
+	return(Results)
 }

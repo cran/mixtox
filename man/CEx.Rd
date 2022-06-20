@@ -4,7 +4,7 @@
 \title{Effect Calculation for All Ninteen Curves}
 \description{Calculating responses at particular concentrations.
 }
-\usage{CEx(model, param, conc)}
+\usage{CEx(model, param, conc, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{model}{a character vector of equation names}
@@ -13,6 +13,8 @@
   zero or any other numeric value.
   }
   \item{conc}{a numeric vector with single or multiple concentrations.}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
 \details{Responses will be calculated with provided equations (model), associated 
 fitting parameters (param), and concentrations.

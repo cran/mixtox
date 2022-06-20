@@ -1,4 +1,4 @@
-iaPred <- function(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6){
+iaPred <- function(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6, sav = FALSE){
 	## independent action prediction
 	## source('ECx.R')
 	
@@ -110,5 +110,16 @@ iaPred <- function(model, param, mixType, effv, effPoints, lb = 1e-9, ub = 6){
 		stop('needs more than one component')
 	}
 	
-	list(ia = ia, e = effPoints, pct = t(pctEcx), unitab = designTable)
+	Results <- list(ia = ia, e = effPoints, pct = t(pctEcx), unitab = designTable)
+	
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("iaPred_", mixType, "_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

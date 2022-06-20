@@ -1,4 +1,4 @@
-gcaPred <- function(model, param, mixType, effv, refEffv, rtype, lb, ub){
+gcaPred <- function(model, param, mixType, effv, refEffv, rtype, lb, ub, sav = FALSE){
 	# generalized concentration addition prediction
 	#
 	## source('ECx.R')
@@ -164,5 +164,16 @@ gcaPred <- function(model, param, mixType, effv, refEffv, rtype, lb, ub){
 	}else {
 		stop('needs more than one component')
 	}
-	list(x = gca$x, e = gca$y, pct = t(pctEcx), unitab = designTable)
+	Results <- list(x = gca$x, e = gca$y, pct = t(pctEcx), unitab = designTable)
+	
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			sav = paste("gcaPred_", Sys.Date(), ".txt", sep = "")
+		}
+		sink(sav)
+		print(Results)
+		sink()
+	}
+
+	return(Results)
 }

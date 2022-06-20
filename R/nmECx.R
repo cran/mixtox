@@ -1,4 +1,4 @@
-nmECx <- function(model, param, effv, minx, gap = -1e-6){
+nmECx <- function(model, param, effv, minx, gap = -1e-6, sav = FALSE){
 	#calculate effect concentrations using associated inverse function
 	if (missing(model) || missing (param) || missing(effv) || missing(minx)) stop('argument missing')
 	if (is.vector(param)) param <- t(param)
@@ -64,5 +64,15 @@ nmECx <- function(model, param, effv, minx, gap = -1e-6){
 		}
 		
 	}
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("nmECx_", Sys.Date(), ".txt", sep = "")
+			write.table(ecx, svfile, sep = "\t", quote = F, col.names=NA)
+		} else{
+			write.table(ecx, sav, sep = "\t", quote = F, col.names=NA)
+		}
+	}
+
 	return(ecx)
 }

@@ -9,7 +9,7 @@
 			The individual concentration-responses should be  
 			fitted only based on the following six models: Hill, 
 			Weibull, Logit, BCW, BCL, and GL.}
-\usage{eiaPred(effv, sgl, mix, pctMix)}
+\usage{eiaPred(effv, sgl, mix, pctMix, sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{effv}{numeric vector with single or multiple effect values (0 ~ 1).}
@@ -29,6 +29,8 @@
   \item{pctMix}{A numeric matrix, the concentration ratio (percent) of every component in the
 		mixture.
 		}
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.}
 }
 \details{eiaPred calculate the effect concentrations based on the fitted concentration-response
 		information of the mixture according to the input effects effv (e.g., 0.05 and 0.5). 

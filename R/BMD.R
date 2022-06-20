@@ -1,4 +1,4 @@
-BMD <- function(object, bmr = 0.10, backg = 0, def = 'additional', eq = 'as.is', sigLev = 0.05, ci = 'CI'){
+BMD <- function(object, bmr = 0.10, backg = 0, def = 'additional', eq = 'as.is', sigLev = 0.05, ci = 'CI', sav = FALSE){
 
 #BMD <- function(object, bmr = 0.05, backg = 0, rtype = c('quantal', 'continuous'), def = c('additional', 'excess', 'relative', 'hybrid'), eq = FALSE, sigLev = 0.05, display = FALSE){
 
@@ -133,6 +133,16 @@ BMD <- function(object, bmr = 0.10, backg = 0, def = 'additional', eq = 'as.is',
 	}
 	
 	colnames(bmds) <- c('BMDL', 'BMD', 'BMDU')
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("BMD_bmr_", bmr, "_", Sys.Date(), ".txt", sep = "")
+			write.table(bmds, svfile, sep = "\t", quote = F)
+		} else{
+			write.table(bmds, sav, sep = "\t", quote = F)
+		}
+	}
+
 	return(bmds)
 	
 }

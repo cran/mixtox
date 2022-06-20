@@ -1,4 +1,4 @@
-ecaPred <- function(effv, sgl, mix, pctMix){
+ecaPred <- function(effv, sgl, mix, pctMix, sav = FALSE){
 	## calculating CA predicted effects at particular effect concentrations
 	
 	dichotomy <- function(fun, a, b, eps){
@@ -88,5 +88,14 @@ ecaPred <- function(effv, sgl, mix, pctMix){
 	
 	rownames(eca) <- paste('caPred', '-E', effv * 100, sep = '')
 	colnames(eca) <- rownames(pctMix)
+
+	if (sav != FALSE){
+		if(sav == TRUE) {
+			svfile = paste("ecaPred_", Sys.Date(), ".txt", sep = "")
+			write.table(eca, svfile, sep = "\t", quote = F, col.names=NA)
+		} else{
+			write.table(eca, sav, sep = "\t", quote = F, col.names=NA)
+		}
+	}
 	return(eca)
 }

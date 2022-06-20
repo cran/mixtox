@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{NOEC and LOEC Calculation}
 \description{calculating the NOEC and LOEC using Dunnett's test}
-\usage{NOEC(x, rspn, blankC = FALSE, sigLev = 0.05, alternertive = 'B')}
+\usage{NOEC(x, rspn, blankC = FALSE, sigLev = 0.05, alternertive = 'B', sav = FALSE)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ a numeric vector of experimental concentrations}
@@ -11,7 +11,9 @@
   \item{blankC}{TRUE if rspn contains responses of blank control. The default is FALSE.}
   \item{sigLev}{the significance level for Dunnett's test. The default is 0.05.}
   \item{alternertive}{the alternative hypothesis: "U"=upper one-sided test; "B"=two-sided 
-	test(default).}  
+	test(default).} 
+  \item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+    a custom file directory: save output to the custom file directory.} 
 }
 \details{ Dunnett's test (Dunnett, 1964) is performed to compare the treatment groups with the 
 blank controls. The critical constants (store in DTcv) were calculated using step-down 
@@ -36,7 +38,10 @@ for Dunnett's test at the significance level of sigLev.}
 \item{loec }{least-observed effect concentration (LOEC).}
 \item{sigLev }{the significance level used in the Dunnett's test.}
 \item{DF }{the number of treatments and degree of fredom.}
+\item{sav}{TRUE: save output to a default file; FALSE: output will not be saved; 
+  a custom file directory: save output to the custom file directory.} 
 }
+
 \references{
 Dunnett, C.W., 1964. New tables for multiple comparisons with a control. Biometrics 30, 482-491.
 }
